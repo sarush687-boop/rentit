@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RentIt — Rent Tech, Not Excuses</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #faf9f6; --bg2: #f2f0eb; --surface: #ffffff;
+  --border: rgba(0,0,0,0.08); --border2: rgba(0,0,0,0.14);
+  --accent: #2b2aff; --accent-light: #eeeeff; --accent2: #ff4136;
+  --text: #1a1a1a; --muted: #6b6b6b; --light: #9b9b9b;
+  --fd: 'Fraunces', Georgia, serif; --fb: 'DM Sans', sans-serif;
+  --r: 14px; --rl: 22px;
+}
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: var(--fb); font-weight: 300; overflow-x: hidden; line-height: 1.6; }
+
+nav { position:fixed; top:0; left:0; right:0; z-index:100; padding:0 60px; height:64px; display:flex; align-items:center; justify-content:space-between; background:rgba(250,249,246,0.93); backdrop-filter:blur(16px); border-bottom:1px solid var(--border); }
+.logo { font-family:var(--fd); font-size:1.35rem; font-weight:600; color:var(--text); letter-spacing:-0.3px; }
+.logo span { color:var(--accent); }
+.nl { display:flex; gap:32px; list-style:none; }
+.nl a { color:var(--muted); text-decoration:none; font-size:0.88rem; font-weight:300; transition:color 0.2s; }
+.nl a:hover { color:var(--text); }
+.ncta { background:var(--text); color:white; padding:9px 22px; border-radius:100px; font-size:0.83rem; font-weight:400; text-decoration:none; transition:all 0.2s; }
+.ncta:hover { background:var(--accent); }
+
+.ticker { background:var(--text); padding:9px 0; overflow:hidden; white-space:nowrap; margin-top:64px; }
+.ti { display:inline-flex; animation:tick 30s linear infinite; }
+.tim { font-size:0.72rem; font-weight:400; letter-spacing:1.5px; text-transform:uppercase; padding:0 28px; color:rgba(255,255,255,0.75); }
+.tim::after { content:'·'; padding-left:28px; color:rgba(255,255,255,0.3); }
+@keyframes tick { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+@keyframes up { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+.hero { min-height:92vh; display:grid; grid-template-columns:1fr 1fr; align-items:center; gap:60px; padding:80px 60px 60px; max-width:1300px; margin:0 auto; }
+.htag { display:inline-flex; align-items:center; gap:8px; background:var(--accent-light); color:var(--accent); font-size:0.73rem; font-weight:500; letter-spacing:1px; text-transform:uppercase; padding:5px 14px; border-radius:100px; margin-bottom:28px; animation:up 0.5s ease both; }
+.dot { width:6px; height:6px; background:var(--accent); border-radius:50%; animation:blink 1.8s infinite; }
+h1 { font-family:var(--fd); font-size:clamp(3rem,5.5vw,5.2rem); font-weight:300; line-height:1.05; letter-spacing:-1.5px; animation:up 0.55s 0.05s ease both; }
+h1 em { font-style:italic; color:var(--accent); }
+.hsub { font-size:1.05rem; font-weight:300; color:var(--muted); margin:20px 0 36px; line-height:1.7; max-width:460px; animation:up 0.55s 0.1s ease both; }
+.hbtns { display:flex; gap:12px; flex-wrap:wrap; animation:up 0.55s 0.15s ease both; }
+.bd { background:var(--text); color:white; padding:13px 28px; border-radius:100px; font-size:0.9rem; font-weight:400; text-decoration:none; border:none; cursor:pointer; transition:all 0.2s; font-family:var(--fb); display:inline-flex; align-items:center; gap:8px; }
+.bd:hover { background:var(--accent); transform:translateY(-1px); }
+.bo { background:transparent; color:var(--text); padding:13px 28px; border-radius:100px; font-size:0.9rem; font-weight:300; text-decoration:none; border:1.5px solid var(--border2); cursor:pointer; transition:all 0.2s; font-family:var(--fb); }
+.bo:hover { border-color:var(--text); }
+.hstats { display:flex; gap:0; margin-top:56px; border:1px solid var(--border); border-radius:var(--r); overflow:hidden; background:var(--surface); animation:up 0.55s 0.2s ease both; }
+.hs { flex:1; padding:18px 20px; border-right:1px solid var(--border); }
+.hs:last-child { border-right:none; }
+.hs-n { font-family:var(--fd); font-size:1.7rem; font-weight:400; color:var(--text); line-height:1; }
+.hs-l { font-size:0.72rem; color:var(--light); margin-top:4px; text-transform:uppercase; letter-spacing:0.8px; font-weight:400; }
+
+.hright { animation:up 0.6s 0.1s ease both; }
+.hig { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.hic { border-radius:var(--rl); overflow:hidden; background:var(--bg2); border:1px solid var(--border); aspect-ratio:1/1; position:relative; }
+.hic:first-child { grid-row:span 2; aspect-ratio:unset; }
+.hic img { width:100%; height:100%; object-fit:cover; display:block; }
+.hip { position:absolute; bottom:12px; left:12px; right:12px; background:rgba(255,255,255,0.9); backdrop-filter:blur(10px); border-radius:10px; padding:10px 14px; display:flex; justify-content:space-between; align-items:center; }
+.hip-n { font-size:0.8rem; font-weight:500; color:var(--text); }
+.hip-p { font-size:0.75rem; font-weight:400; color:var(--accent); }
+
+.sec { padding:100px 60px; max-width:1300px; margin:0 auto; }
+.sl { font-size:0.7rem; text-transform:uppercase; letter-spacing:2px; color:var(--light); font-weight:400; margin-bottom:10px; }
+.st { font-family:var(--fd); font-size:clamp(2rem,3.5vw,3rem); font-weight:300; letter-spacing:-0.8px; line-height:1.1; margin-bottom:14px; }
+.sd { color:var(--muted); font-size:1rem; font-weight:300; line-height:1.7; max-width:480px; }
+
+.how-bg { background:var(--surface); border-top:1px solid var(--border); border-bottom:1px solid var(--border); }
+.steps { display:grid; grid-template-columns:repeat(5,1fr); gap:0; margin-top:56px; position:relative; }
+.steps::before { content:''; position:absolute; top:28px; left:10%; right:10%; height:1px; background:linear-gradient(90deg,transparent,var(--border2) 20%,var(--border2) 80%,transparent); }
+.step { text-align:center; padding:0 12px; }
+.sc { width:56px; height:56px; border-radius:50%; background:var(--surface); border:1.5px solid var(--border2); display:flex; align-items:center; justify-content:center; margin:0 auto 18px; font-size:1.4rem; position:relative; z-index:1; transition:all 0.25s; }
+.step:hover .sc { border-color:var(--accent); background:var(--accent-light); }
+.sn { font-size:0.68rem; font-weight:500; color:var(--accent); letter-spacing:1px; text-transform:uppercase; margin-bottom:5px; }
+.step h4 { font-family:var(--fd); font-size:0.95rem; font-weight:400; margin-bottom:6px; }
+.step p { font-size:0.8rem; font-weight:300; color:var(--muted); line-height:1.55; }
+
+.frow { display:flex; gap:8px; margin-top:32px; flex-wrap:wrap; }
+.ft { padding:7px 18px; border-radius:100px; font-size:0.83rem; font-weight:300; cursor:pointer; border:1.5px solid var(--border2); color:var(--muted); background:transparent; transition:all 0.2s; font-family:var(--fb); }
+.ft.on,.ft:hover { background:var(--text); color:white; border-color:var(--text); }
+.pgrid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:36px; }
+.pc { background:var(--surface); border:1px solid var(--border); border-radius:var(--rl); overflow:hidden; transition:all 0.25s; cursor:pointer; }
+.pc:hover { transform:translateY(-4px); box-shadow:0 16px 48px rgba(0,0,0,0.08); border-color:var(--border2); }
+.pi { height:200px; overflow:hidden; position:relative; background:var(--bg2); display:flex; align-items:center; justify-content:center; }
+.pi img { width:100%; height:100%; object-fit:cover; transition:transform 0.4s; }
+.pc:hover .pi img { transform:scale(1.04); }
+.pb { position:absolute; top:12px; left:12px; font-size:0.66rem; font-weight:500; letter-spacing:0.5px; padding:4px 10px; border-radius:100px; text-transform:uppercase; }
+.bpop { background:#fff0f0; color:#cc2200; border:1px solid #ffdddd; }
+.bnew { background:#f0f8ee; color:#2a7a1a; border:1px solid #d0eecb; }
+.bhot { background:#fff8e0; color:#9a6000; border:1px solid #f0e0a0; }
+.pbd { padding:20px; }
+.pn { font-family:var(--fd); font-size:1rem; font-weight:400; margin-bottom:3px; }
+.ps { font-size:0.76rem; font-weight:300; color:var(--muted); margin-bottom:16px; line-height:1.5; }
+.pf { display:flex; align-items:center; justify-content:space-between; }
+.pp { font-family:var(--fd); font-size:1.25rem; font-weight:300; color:var(--text); }
+.pp small { font-size:0.72rem; font-family:var(--fb); font-weight:300; color:var(--light); margin-left:2px; }
+.rb { background:var(--text); color:white; border:none; padding:8px 18px; border-radius:100px; font-size:0.8rem; font-weight:400; cursor:pointer; font-family:var(--fb); transition:all 0.2s; }
+.rb:hover { background:var(--accent); }
+
+.feat-bg { background:var(--bg2); border-top:1px solid var(--border); border-bottom:1px solid var(--border); }
+.fg { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:48px; }
+.fc { background:var(--surface); border:1px solid var(--border); border-radius:var(--rl); padding:30px 28px; transition:all 0.25s; }
+.fc:hover { border-color:var(--border2); transform:translateY(-2px); }
+.fi { font-size:1.5rem; margin-bottom:16px; display:block; }
+.fc h3 { font-family:var(--fd); font-size:1rem; font-weight:400; margin-bottom:8px; }
+.fc p { font-size:0.84rem; font-weight:300; color:var(--muted); line-height:1.65; }
+
+.mkt { background:var(--text); color:white; }
+.mkti { max-width:1300px; margin:0 auto; padding:100px 60px; display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center; }
+.bsg { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:40px; }
+.bs { border:1px solid rgba(255,255,255,0.1); border-radius:var(--r); padding:26px 22px; }
+.bsn { font-family:var(--fd); font-size:2.2rem; font-weight:300; line-height:1; margin-bottom:6px; }
+.c1{color:#7b77ff} .c2{color:#ff7070} .c3{color:#5dd8a4} .c4{color:#ffc65c}
+.bsl { font-size:0.78rem; font-weight:300; color:rgba(255,255,255,0.5); }
+.segs { display:flex; flex-direction:column; gap:12px; }
+.seg { display:flex; align-items:center; gap:16px; border:1px solid rgba(255,255,255,0.08); border-radius:var(--r); padding:16px 20px; transition:border-color 0.2s; }
+.seg:hover { border-color:rgba(255,255,255,0.2); }
+.seg-ic { font-size:1.3rem; flex-shrink:0; }
+.seg h4 { font-size:0.9rem; font-weight:400; margin-bottom:2px; }
+.seg p { font-size:0.78rem; font-weight:300; color:rgba(255,255,255,0.5); }
+
+.prg { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:48px; }
+.prc { background:var(--surface); border:1px solid var(--border); border-radius:var(--rl); padding:34px 30px; position:relative; transition:all 0.25s; }
+.prc:hover { transform:translateY(-3px); box-shadow:0 12px 40px rgba(0,0,0,0.07); }
+.prc.feat { background:var(--text); color:white; border-color:var(--text); transform:scale(1.04); }
+.prc.feat:hover { transform:scale(1.04) translateY(-3px); }
+.fpill { position:absolute; top:-12px; left:50%; transform:translateX(-50%); background:var(--accent); color:white; font-size:0.68rem; font-weight:500; padding:4px 14px; border-radius:100px; white-space:nowrap; letter-spacing:0.5px; text-transform:uppercase; }
+.ptier { font-size:0.7rem; font-weight:500; letter-spacing:1.5px; text-transform:uppercase; color:var(--light); margin-bottom:12px; }
+.feat .ptier { color:rgba(255,255,255,0.45); }
+.prn { font-family:var(--fd); font-size:2.8rem; font-weight:300; line-height:1; margin-bottom:4px; }
+.pru { font-size:0.8rem; font-weight:300; color:var(--muted); margin-bottom:26px; }
+.feat .pru { color:rgba(255,255,255,0.5); }
+.pfl { list-style:none; display:flex; flex-direction:column; gap:9px; margin-bottom:28px; }
+.pfl li { font-size:0.84rem; font-weight:300; color:var(--muted); display:flex; align-items:center; gap:8px; }
+.feat .pfl li { color:rgba(255,255,255,0.65); }
+.pfl li::before { content:'✓'; color:#2bb56e; font-weight:500; font-size:0.82rem; flex-shrink:0; }
+.feat .pfl li::before { color:#5dd8a4; }
+.pct { width:100%; padding:13px; border-radius:100px; font-size:0.88rem; font-weight:400; cursor:pointer; border:1.5px solid var(--border2); background:transparent; color:var(--text); font-family:var(--fb); transition:all 0.2s; }
+.pct:hover { background:var(--text); color:white; border-color:var(--text); }
+.feat .pct { background:white; color:var(--text); border-color:white; }
+.feat .pct:hover { background:var(--accent); border-color:var(--accent); color:white; }
+
+.tg { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:48px; }
+.tc { background:var(--surface); border:1px solid var(--border); border-radius:var(--rl); padding:28px; transition:all 0.25s; }
+.tc:hover { border-color:var(--border2); transform:translateY(-2px); }
+.sts { color:#e8a020; font-size:0.82rem; letter-spacing:2px; margin-bottom:12px; }
+.tt { font-size:0.88rem; font-weight:300; color:var(--text); line-height:1.65; font-style:italic; margin-bottom:20px; }
+.ta { display:flex; align-items:center; gap:10px; }
+.tav { width:36px; height:36px; border-radius:50%; background:var(--bg2); display:flex; align-items:center; justify-content:center; font-size:1rem; border:1px solid var(--border); }
+.tan { font-size:0.85rem; font-weight:400; }
+.tar { font-size:0.72rem; font-weight:300; color:var(--muted); }
+
+.tmg { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-top:48px; }
+.tmc { background:var(--surface); border:1px solid var(--border); border-radius:var(--rl); padding:28px 22px; text-align:center; transition:all 0.25s; }
+.tmc:hover { transform:translateY(-3px); border-color:var(--border2); }
+.tmav { width:64px; height:64px; border-radius:50%; margin:0 auto 16px; display:flex; align-items:center; justify-content:center; font-size:1.5rem; background:var(--bg2); border:1px solid var(--border); }
+.tmn { font-family:var(--fd); font-size:0.95rem; font-weight:400; margin-bottom:3px; }
+.tmr { font-size:0.75rem; font-weight:300; color:var(--muted); }
+
+.cta-wrap { background:var(--accent); color:white; text-align:center; padding:100px 60px; position:relative; overflow:hidden; }
+.cta-wrap::before { content:''; position:absolute; top:-200px; left:50%; transform:translateX(-50%); width:600px; height:600px; border-radius:50%; background:rgba(255,255,255,0.06); pointer-events:none; }
+
+footer { background:var(--surface); border-top:1px solid var(--border); padding:60px; display:grid; grid-template-columns:1.5fr 1fr 1fr 1fr; gap:40px; }
+.fl { font-family:var(--fd); font-size:1.2rem; font-weight:400; margin-bottom:10px; }
+.fl span { color:var(--accent); }
+footer > div > p { font-size:0.82rem; font-weight:300; color:var(--muted); line-height:1.6; max-width:220px; }
+.fcol h5 { font-size:0.78rem; font-weight:500; letter-spacing:0.5px; margin-bottom:16px; text-transform:uppercase; }
+.fcol a { display:block; font-size:0.82rem; font-weight:300; color:var(--muted); text-decoration:none; margin-bottom:9px; transition:color 0.2s; }
+.fcol a:hover { color:var(--text); }
+.fbot { background:var(--surface); border-top:1px solid var(--border); padding:18px 60px; display:flex; justify-content:space-between; font-size:0.75rem; font-weight:300; color:var(--light); }
+
+.ovl { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:200; align-items:center; justify-content:center; backdrop-filter:blur(6px); }
+.ovl.on { display:flex; }
+.modal { background:var(--surface); border:1px solid var(--border); border-radius:var(--rl); padding:38px; max-width:440px; width:92%; position:relative; animation:mIn 0.3s ease; }
+@keyframes mIn { from{opacity:0;transform:scale(0.94) translateY(16px)} to{opacity:1;transform:scale(1) translateY(0)} }
+.mcl { position:absolute; top:14px; right:14px; background:var(--bg); border:1px solid var(--border); color:var(--muted); width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:0.85rem; transition:all 0.2s; }
+.mcl:hover { color:var(--text); }
+.mt { font-family:var(--fd); font-size:1.35rem; font-weight:400; margin-bottom:3px; }
+.msp { font-size:0.8rem; font-weight:300; color:var(--muted); margin-bottom:24px; }
+.dg { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-bottom:22px; }
+.do { background:var(--bg); border:1.5px solid var(--border); border-radius:10px; padding:12px 8px; text-align:center; cursor:pointer; transition:all 0.2s; }
+.do.sel,.do:hover { border-color:var(--text); background:var(--text); color:white; }
+.dp { font-family:var(--fd); font-size:1.05rem; font-weight:400; }
+.dl { font-size:0.68rem; font-weight:300; color:var(--muted); margin-top:2px; }
+.do.sel .dl,.do:hover .dl { color:rgba(255,255,255,0.6); }
+.mf { margin-bottom:14px; }
+.mf label { display:block; font-size:0.72rem; font-weight:500; color:var(--muted); margin-bottom:5px; text-transform:uppercase; letter-spacing:0.8px; }
+.mf input { width:100%; background:var(--bg); border:1.5px solid var(--border); border-radius:8px; padding:11px 14px; color:var(--text); font-family:var(--fb); font-size:0.88rem; font-weight:300; outline:none; transition:border-color 0.2s; }
+.mf input:focus { border-color:var(--text); }
+.mf input::placeholder { color:var(--light); }
+.msub { width:100%; background:var(--text); color:white; border:none; border-radius:100px; padding:13px; font-size:0.9rem; font-weight:400; cursor:pointer; font-family:var(--fb); transition:all 0.2s; margin-top:6px; }
+.msub:hover { background:var(--accent); }
+
+.toast { position:fixed; bottom:28px; right:28px; background:var(--surface); border:1px solid #d0eecb; border-radius:12px; padding:14px 20px; display:flex; align-items:center; gap:10px; font-size:0.86rem; font-weight:300; z-index:300; box-shadow:0 8px 32px rgba(0,0,0,0.1); transform:translateY(60px); opacity:0; transition:all 0.35s cubic-bezier(0.34,1.56,0.64,1); }
+.toast.show { transform:translateY(0); opacity:1; }
+.rv { opacity:0; transform:translateY(24px); transition:opacity 0.55s ease,transform 0.55s ease; }
+.rv.v { opacity:1; transform:translateY(0); }
+
+@media(max-width:900px){
+  nav{padding:0 24px;} .nl{display:none;}
+  .hero{grid-template-columns:1fr;padding:40px 24px 60px;} .hright{display:none;}
+  .sec{padding:60px 24px;}
+  .steps{grid-template-columns:1fr;} .steps::before{display:none;}
+  .pgrid{grid-template-columns:1fr 1fr;}
+  .fg{grid-template-columns:1fr;}
+  .mkti{grid-template-columns:1fr;padding:60px 24px;}
+  .prg{grid-template-columns:1fr;} .tg{grid-template-columns:1fr;} .tmg{grid-template-columns:1fr 1fr;}
+  footer{grid-template-columns:1fr 1fr;padding:40px 24px;}
+  .fbot{padding:16px 24px;flex-direction:column;gap:6px;}
+  .cta-wrap{padding:60px 24px;}
+  .poster-grid{grid-template-columns:1fr !important;}
+  .poster-grid > div[style*="grid-column"]{grid-column:span 1 !important;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Rent<span>It</span></div>
+  <ul class="nl">
+    <li><a href="#products">Browse</a></li>
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#research">Research</a></li>
+    <li><a href="#team">Team</a></li>
+  </ul>
+  <a href="#products" class="ncta">Start Renting</a>
+</nav>
+
+<div class="ticker">
+  <div class="ti">
+    <span class="tim">Affordable Tech</span><span class="tim">Starting at ₹99/day</span><span class="tim">Doorstep Delivery</span><span class="tim">No Long Contracts</span><span class="tim">Gaming PCs</span><span class="tim">RTX 4090 Available</span><span class="tim">Student Discounts</span><span class="tim">Insured Devices</span><span class="tim">Affordable Tech</span><span class="tim">Starting at ₹99/day</span><span class="tim">Doorstep Delivery</span><span class="tim">No Long Contracts</span><span class="tim">Gaming PCs</span><span class="tim">RTX 4090 Available</span><span class="tim">Student Discounts</span><span class="tim">Insured Devices</span>
+  </div>
+</div>
+
+<div style="border-bottom:1px solid var(--border)">
+<div class="hero">
+  <div>
+    <div class="htag"><span class="dot"></span> Now available across India</div>
+    <h1>Powerful tech.<br><em>Zero ownership.</em></h1>
+    <p class="hsub">Rent laptops, gaming rigs & workstations — delivered to your door. Pay by the day. No EMIs, no commitments.</p>
+    <div class="hbtns">
+      <a href="#products" class="bd">Browse Devices →</a>
+      <a href="#how" class="bo">How it works</a>
+    </div>
+    <div class="hstats">
+      <div class="hs"><div class="hs-n">₹99</div><div class="hs-l">Starting / day</div></div>
+      <div class="hs"><div class="hs-n">500+</div><div class="hs-l">Devices</div></div>
+      <div class="hs"><div class="hs-n">48hr</div><div class="hs-l">Delivery</div></div>
+      <div class="hs"><div class="hs-n">100%</div><div class="hs-l">Insured</div></div>
+    </div>
+  </div>
+  <div class="hright">
+    <div class="hig">
+      <div class="hic">
+        <img src="https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?w=600&q=80" alt="Gaming PC" loading="lazy">
+        <div class="hip"><span class="hip-n">Gaming PC RTX 4090</span><span class="hip-p">₹999/day</span></div>
+      </div>
+      <div class="hic">
+        <img src="https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&q=80" alt="Laptop" loading="lazy">
+        <div class="hip"><span class="hip-n">Ultrabook</span><span class="hip-p">₹199/day</span></div>
+      </div>
+      <div class="hic">
+        <img src="https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=400&q=80" alt="Workstation" loading="lazy">
+        <div class="hip"><span class="hip-n">Workstation</span><span class="hip-p">₹799/day</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- HOW IT WORKS -->
+<div class="how-bg" id="how">
+  <div class="sec rv">
+    <div class="sl">Process</div>
+    <h2 class="st">Simple. Fast. Affordable.</h2>
+    <p class="sd">From browsing to your doorstep in under 48 hours. We handle everything.</p>
+    <div class="steps">
+      <div class="step"><div class="sc">🔍</div><div class="sn">Step 01</div><h4>Browse & Choose</h4><p>Filter by specs, duration and budget.</p></div>
+      <div class="step"><div class="sc">📋</div><div class="sn">Step 02</div><h4>Book Online</h4><p>Select duration and confirm in 2 minutes.</p></div>
+      <div class="step"><div class="sc">🚚</div><div class="sn">Step 03</div><h4>We Deliver</h4><p>Tested, sanitized device at your door.</p></div>
+      <div class="step"><div class="sc">💻</div><div class="sn">Step 04</div><h4>Use It</h4><p>Work, game, study. Extend anytime.</p></div>
+      <div class="step"><div class="sc">📦</div><div class="sn">Step 05</div><h4>We Pick Up</h4><p>Schedule pickup when done. We handle it.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- PRODUCTS -->
+<div class="sec" id="products">
+  <div class="rv">
+    <div class="sl">Catalog</div>
+    <h2 class="st">Browse Devices</h2>
+    <p class="sd">From budget laptops to RTX workstations — rent exactly what you need.</p>
+  </div>
+  <div class="frow rv">
+    <button class="ft on" onclick="fp('all',this)">All</button>
+    <button class="ft" onclick="fp('laptop',this)">Laptops</button>
+    <button class="ft" onclick="fp('gaming',this)">Gaming PCs</button>
+    <button class="ft" onclick="fp('workstation',this)">Workstations</button>
+    <button class="ft" onclick="fp('parts',this)">Parts & GPUs</button>
+  </div>
+  <div class="pgrid rv" id="pg"></div>
+</div>
+
+<!-- FEATURES -->
+<div class="feat-bg">
+  <div class="sec rv">
+    <div class="sl">Why RentIt</div>
+    <h2 class="st">Built for real people</h2>
+    <p class="sd">No jargon, no hidden fees. Just tech when you need it.</p>
+    <div class="fg">
+      <div class="fc"><span class="fi">🚚</span><h3>Doorstep Delivery</h3><p>Delivered and picked up from your location within 48 hours. No hassle, no travel.</p></div>
+      <div class="fc"><span class="fi">🔒</span><h3>Safe & Insured</h3><p>All devices are sanitized, tested, and fully insured. Factory reset on return.</p></div>
+      <div class="fc"><span class="fi">💳</span><h3>Affordable Pricing</h3><p>Plans from just ₹99/day. Accessible for students, freelancers, and professionals.</p></div>
+      <div class="fc"><span class="fi">📅</span><h3>Flexible Duration</h3><p>Rent for a day, week, or month. No long-term contracts. Extend or cancel anytime.</p></div>
+      <div class="fc"><span class="fi">⚡</span><h3>Ready to Use</h3><p>Every device arrives fully charged and tested. Plug in and get started immediately.</p></div>
+      <div class="fc"><span class="fi">🤝</span><h3>24/7 Support</h3><p>Something not right? Our team swaps or assists around the clock.</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- MARKET -->
+<div class="mkt">
+  <div class="mkti">
+    <div class="rv">
+      <div class="sl" style="color:rgba(255,255,255,0.4)">Market</div>
+      <h2 class="st" style="color:white">A massive underserved market</h2>
+      <p class="sd" style="color:rgba(255,255,255,0.55)">Millions of Indians need access to technology but can't afford to buy. We're here to change that.</p>
+      <div class="bsg">
+        <div class="bs"><div class="bsn c1">600M+</div><div class="bsl">Students in India</div></div>
+        <div class="bs"><div class="bsn c2">65%</div><div class="bsl">Cannot afford a laptop</div></div>
+        <div class="bs"><div class="bsn c3">₹12B</div><div class="bsl">Potential market size</div></div>
+        <div class="bs"><div class="bsn c4">₹800+</div><div class="bsl">Average laptop cost</div></div>
+      </div>
+    </div>
+    <div class="rv">
+      <div class="sl" style="color:rgba(255,255,255,0.4)">Who We Serve</div>
+      <h2 class="st" style="color:white;font-size:1.8rem">Every use case.<br>Every budget.</h2>
+      <div class="segs" style="margin-top:28px">
+        <div class="seg"><span class="seg-ic">🎓</span><div><h4>Students & Exam Takers</h4><p>High-performance PCs for limited exam periods</p></div></div>
+        <div class="seg"><span class="seg-ic">🎨</span><div><h4>Designers & Video Editors</h4><p>Powerful GPUs for short-term project work</p></div></div>
+        <div class="seg"><span class="seg-ic">🎮</span><div><h4>Casual Gamers</h4><p>Try gaming rigs without buying expensive hardware</p></div></div>
+        <div class="seg"><span class="seg-ic">💼</span><div><h4>Freelancers & Professionals</h4><p>Specific tools for short contracts or projects</p></div></div>
+        <div class="seg"><span class="seg-ic">🏪</span><div><h4>Small Businesses</h4><p>Temporary workstations for events & pop-ups</p></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PRICING -->
+<div class="sec" id="pricing">
+  <div class="rv">
+    <div class="sl">Pricing</div>
+    <h2 class="st">Simple, honest pricing</h2>
+    <p class="sd">No surprises, no hidden fees. Pick a plan that fits your timeline.</p>
+  </div>
+  <div class="prg rv">
+    <div class="prc">
+      <div class="ptier">Daily</div>
+      <div class="prn">₹99<span style="font-size:1.1rem;font-family:var(--fb)">+</span></div>
+      <div class="pru">per device, per day</div>
+      <ul class="pfl"><li>Any device from catalog</li><li>Next-day delivery</li><li>Device insurance included</li><li>Free pickup</li><li>Standard support</li></ul>
+      <button class="pct" onclick="om('Daily Rental','Pay per day — flexible, no commitment')">Get Started</button>
+    </div>
+    <div class="prc feat">
+      <div class="fpill">Most Popular</div>
+      <div class="ptier">Weekly</div>
+      <div class="prn">₹499<span style="font-size:1.1rem;font-family:var(--fb)">+</span></div>
+      <div class="pru">per device — save up to 30%</div>
+      <ul class="pfl"><li>Any device from catalog</li><li>Priority 24hr delivery</li><li>Full device insurance</li><li>Free pickup & swap</li><li>Priority support</li><li>Extend anytime</li></ul>
+      <button class="pct" onclick="om('Weekly Rental','Best value — save up to 30%')">Get Started</button>
+    </div>
+    <div class="prc">
+      <div class="ptier">Monthly</div>
+      <div class="prn">₹1499<span style="font-size:1.1rem;font-family:var(--fb)">+</span></div>
+      <div class="pru">per device — best value</div>
+      <ul class="pfl"><li>Any device from catalog</li><li>Same-day delivery</li><li>Full device insurance</li><li>Free pickup, swap & upgrade</li><li>Dedicated support</li><li>Renew & extend anytime</li></ul>
+      <button class="pct" onclick="om('Monthly Rental','Maximum savings, all features included')">Get Started</button>
+    </div>
+  </div>
+</div>
+
+<!-- TESTIMONIALS -->
+<div style="background:var(--surface);border-top:1px solid var(--border)">
+  <div class="sec rv">
+    <div class="sl">Reviews</div>
+    <h2 class="st">Loved by our renters</h2>
+    <p class="sd">Real people, real reviews.</p>
+    <div class="tg">
+      <div class="tc"><div class="sts">★★★★★</div><p class="tt">"Rented a gaming PC for a week and it was mind-blowing. Delivered in perfect condition, specs were exactly as listed."</p><div class="ta"><div class="tav">🧑</div><div><div class="tan">Rahul M.</div><div class="tar">Student, Delhi</div></div></div></div>
+      <div class="tc"><div class="sts">★★★★★</div><p class="tt">"Needed a render machine for 2 weeks. Renting made so much more sense than buying. The RTX 4080 workstation was flawless."</p><div class="ta"><div class="tav">👩</div><div><div class="tan">Priya S.</div><div class="tar">Video Editor, Bangalore</div></div></div></div>
+      <div class="tc"><div class="sts">★★★★☆</div><p class="tt">"Rented a budget laptop for my entrance exams. Smooth pickup and the device worked perfectly. The ₹99/day pricing is incredible."</p><div class="ta"><div class="tav">🧑‍💼</div><div><div class="tan">Arjun K.</div><div class="tar">Engineering Student, Pune</div></div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- IEEE RESEARCH SECTION -->
+<div style="background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)" id="research">
+  <div class="sec rv">
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:36px;flex-wrap:wrap">
+      <div style="display:inline-flex;align-items:center;gap:8px;background:#003f8a;color:white;font-size:0.7rem;font-weight:500;letter-spacing:1px;text-transform:uppercase;padding:5px 14px;border-radius:100px">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+        IEEE YESIST12 — Innovation Poster
+      </div>
+      <div style="font-size:0.8rem;font-weight:300;color:var(--muted)">Pilot: IEEE SB MIET &nbsp;·&nbsp; 11 April 2026</div>
+    </div>
+
+    <div class="sl">Research Overview</div>
+    <h2 class="st">Innovation at a Glance</h2>
+    <p class="sd" style="max-width:640px">RentIt's model addresses one of India's most pressing digital inclusion challenges — formalised here as an IEEE innovation submission by Team RentIt.</p>
+
+    <!-- POSTER GRID: 2-col -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:48px" class="poster-grid">
+
+      <!-- Introduction -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:32px;grid-column:span 2">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+          <div style="width:32px;height:32px;background:#003f8a;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          </div>
+          <h3 style="font-family:var(--fd);font-size:1.05rem;font-weight:400">Introduction</h3>
+        </div>
+        <p style="font-size:0.88rem;font-weight:300;color:var(--muted);line-height:1.75">RentIt is a peer-to-peer computer and parts rental platform designed to democratise access to technology across India. The platform enables students, freelancers, designers, gamers, and small businesses to rent high-performance computers, laptops, and individual hardware components on a short-term basis — daily, weekly, or monthly — at prices starting at ₹99/day. Devices are delivered and picked up from the user's doorstep, fully tested, sanitized, and insured, removing every barrier between a user and the technology they need.</p>
+      </div>
+
+      <!-- Problem Statement -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:32px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+          <div style="width:32px;height:32px;background:#cc2200;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          </div>
+          <h3 style="font-family:var(--fd);font-size:1.05rem;font-weight:400">Problem Statement</h3>
+        </div>
+        <p style="font-size:0.87rem;font-weight:300;color:var(--muted);line-height:1.75;margin-bottom:16px">Access to personal computing is not universal — it is a privilege. The key barriers are:</p>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:10px">
+          <li style="display:flex;gap:10px;font-size:0.85rem;font-weight:300;color:var(--muted)"><span style="color:#cc2200;font-weight:500;flex-shrink:0">→</span><span><strong style="font-weight:500;color:var(--text)">High upfront cost.</strong> Average laptops cost ₹800+ and high-end workstations can run into tens of thousands — entirely out of reach for low-income users.</span></li>
+          <li style="display:flex;gap:10px;font-size:0.85rem;font-weight:300;color:var(--muted)"><span style="color:#cc2200;font-weight:500;flex-shrink:0">→</span><span><strong style="font-weight:500;color:var(--text)">Short-term need, long-term ownership.</strong> Students, freelancers, and project-based professionals need powerful hardware for weeks, not years — buying makes no financial sense.</span></li>
+          <li style="display:flex;gap:10px;font-size:0.85rem;font-weight:300;color:var(--muted)"><span style="color:#cc2200;font-weight:500;flex-shrink:0">→</span><span><strong style="font-weight:500;color:var(--text)">Unaffordable components.</strong> GPU or RAM upgrades required for creative or compute-intensive work remain inaccessible for most users.</span></li>
+          <li style="display:flex;gap:10px;font-size:0.85rem;font-weight:300;color:var(--muted)"><span style="color:#cc2200;font-weight:500;flex-shrink:0">→</span><span><strong style="font-weight:500;color:var(--text)">Growing digital divide.</strong> With 65% of India's 600M+ students unable to afford a laptop, this gap compounds educational and economic inequality.</span></li>
+        </ul>
+      </div>
+
+      <!-- Proposed Solution -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:32px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+          <div style="width:32px;height:32px;background:#1a7a3a;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          </div>
+          <h3 style="font-family:var(--fd);font-size:1.05rem;font-weight:400">Proposed Solution</h3>
+        </div>
+        <p style="font-size:0.87rem;font-weight:300;color:var(--muted);line-height:1.75;margin-bottom:16px">RentIt — rent any computer or part you need, for as long as you need it, at a price you can afford.</p>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:10px">
+          <li style="display:flex;gap:10px;font-size:0.85rem;font-weight:300;color:var(--muted)"><span style="color:#1a7a3a;font-weight:500;flex-shrink:0">✓</span><span><strong style="font-weight:500;color:var(--text)">Full PC & parts rental</strong> — laptops, workstations, gaming rigs, and individual components like GPUs and RAM available on demand.</span></li>
+          <li style="display:flex;gap:10px;font-size:0.85rem;font-weight:300;color:var(--muted)"><span style="color:#1a7a3a;font-weight:500;flex-shrink:0">✓</span><span><strong style="font-weight:500;color:var(--text)">Flexible duration</strong> — daily, weekly, or monthly plans starting at ₹99/day. No long-term contracts. Extend anytime.</span></li>
+          <li style="display:flex;gap:10px;font-size:0.85rem;font-weight:300;color:var(--muted)"><span style="color:#1a7a3a;font-weight:500;flex-shrink:0">✓</span><span><strong style="font-weight:500;color:var(--text)">Doorstep delivery & pickup</strong> — zero travel required. Devices delivered within 48 hours, collected on schedule.</span></li>
+          <li style="display:flex;gap:10px;font-size:0.85rem;font-weight:300;color:var(--muted)"><span style="color:#1a7a3a;font-weight:500;flex-shrink:0">✓</span><span><strong style="font-weight:500;color:var(--text)">Fully insured & sanitized</strong> — every device is tested, cleaned, and factory-reset on return. User data is always safe.</span></li>
+        </ul>
+      </div>
+
+      <!-- Advantages & Challenges -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--rl);padding:32px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px">
+          <div style="width:32px;height:32px;background:#7a5c00;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+          <h3 style="font-family:var(--fd);font-size:1.05rem;font-weight:400">Advantages & Challenges</h3>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div>
+            <div style="font-size:0.72rem;font-weight:500;text-transform:uppercase;letter-spacing:1px;color:#1a7a3a;margin-bottom:10px">Advantages</div>
+            <ul style="list-style:none;display:flex;flex-direction:column;gap:8px">
+              <li style="font-size:0.82rem;font-weight:300;color:var(--muted);display:flex;gap:8px"><span style="color:#1a7a3a;flex-shrink:0">+</span>Eliminates high upfront costs</li>
+              <li style="font-size:0.82rem;font-weight:300;color:var(--muted);display:flex;gap:8px"><span style="color:#1a7a3a;flex-shrink:0">+</span>Accessible to students & low-income users</li>
+              <li style="font-size:0.82rem;font-weight:300;color:var(--muted);display:flex;gap:8px"><span style="color:#1a7a3a;flex-shrink:0">+</span>Flexible, pay-as-you-go model</li>
+              <li style="font-size:0.82rem;font-weight:300;color:var(--muted);display:flex;gap:8px"><span style="color:#1a7a3a;flex-shrink:0">+</span>Reduces e-waste via device reuse</li>
+              <li style="font-size:0.82rem;font-weight:300;color:var(--muted);display:flex;gap:8px"><span style="color:#1a7a3a;flex-shrink:0">+</span>₹12B+ addressable market in India</li>
+            </ul>
+          </div>
+          <div>
+            <div style="font-size:0.72rem;font-weight:500;text-transform:uppercase;letter-spacing:1px;color:#9a6000;margin-bottom:10px">Challenges</div>
+            <ul style="list-style:none;display:flex;flex-direction:column;gap:8px">
+              <li style="font-size:0.82rem;font-weight:300;color:var(--muted);display:flex;gap:8px"><span style="color:#9a6000;flex-shrink:0">−</span>Logistics & last-mile delivery at scale</li>
+              <li style="font-size:0.82rem;font-weight:300;color:var(--muted);display:flex;gap:8px"><span style="color:#9a6000;flex-shrink:0">−</span>Device damage & loss risk management</li>
+              <li style="font-size:0.82rem;font-weight:300;color:var(--muted);display:flex;gap:8px"><span style="color:#9a6000;flex-shrink:0">−</span>Trust & data privacy perception</li>
+              <li style="font-size:0.82rem;font-weight:300;color:var(--muted);display:flex;gap:8px"><span style="color:#9a6000;flex-shrink:0">−</span>Building initial device inventory</li>
+              <li style="font-size:0.82rem;font-weight:300;color:var(--muted);display:flex;gap:8px"><span style="color:#9a6000;flex-shrink:0">−</span>Behaviour shift from buy to rent mindset</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Conclusion -->
+      <div style="background:var(--text);color:white;border-radius:var(--rl);padding:32px">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+          <div style="width:32px;height:32px;background:rgba(255,255,255,0.12);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          </div>
+          <h3 style="font-family:var(--fd);font-size:1.05rem;font-weight:400;color:white">Conclusion</h3>
+        </div>
+        <p style="font-size:0.87rem;font-weight:300;color:rgba(255,255,255,0.7);line-height:1.8;margin-bottom:20px">RentIt demonstrates that technology access need not require technology ownership. By combining a simple rental marketplace with doorstep logistics and flexible pricing, the platform creates a scalable, sustainable pathway to digital inclusion for India's 600M+ students and working professionals.</p>
+        <p style="font-size:0.87rem;font-weight:300;color:rgba(255,255,255,0.7);line-height:1.8">The vision is clear: <em style="color:white;font-style:italic">technology should never be a privilege</em>. RentIt is building the infrastructure to make that vision real — one rental at a time.</p>
+        <div style="margin-top:24px;padding-top:20px;border-top:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;gap:8px">
+          <div style="width:6px;height:6px;border-radius:50%;background:#5dd8a4"></div>
+          <span style="font-size:0.75rem;font-weight:300;color:rgba(255,255,255,0.5)">Submitted to IEEE YESIST12 Innovation Track · IEEE SB MIET · April 2026</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- TEAM -->
+<div class="sec" id="team">
+  <div class="rv">
+    <div class="sl">The Team</div>
+    <h2 class="st">The people behind RentIt</h2>
+    <p class="sd">A passionate team on a mission to bridge the digital divide.</p>
+  </div>
+  <div class="tmg rv">
+    <div class="tmc"><div class="tmav">🚀</div><div class="tmn">Arush Sharma</div><div class="tmr">Co-Founder & CEO</div></div>
+    <div class="tmc"><div class="tmav">⚙️</div><div class="tmn">Aadarsh Pandey</div><div class="tmr">Co-Founder & CTO</div></div>
+    <div class="tmc"><div class="tmav">📦</div><div class="tmn">Rukund</div><div class="tmr">Head of Operations</div></div>
+    <div class="tmc"><div class="tmav">📣</div><div class="tmn">Unnat</div><div class="tmr">Head of Marketing</div></div>
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="cta-wrap">
+  <div class="sl" style="color:rgba(255,255,255,0.5)">Get Started</div>
+  <h2 class="st" style="color:white;max-width:700px;margin:0 auto 16px;text-align:center">Technology should<br>never be a privilege.</h2>
+  <p class="sd" style="color:rgba(255,255,255,0.65);margin:0 auto 40px;max-width:460px;text-align:center">Join thousands of students, freelancers, and professionals who've discovered a smarter way to access tech.</p>
+  <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+    <a href="#products" style="background:white;color:var(--text);padding:13px 30px;border-radius:100px;font-size:0.9rem;font-weight:400;text-decoration:none;font-family:var(--fb);transition:all 0.2s">Start Renting Now</a>
+    <button onclick="om('Get in Touch','Tell us what you need')" style="background:transparent;color:white;padding:13px 30px;border-radius:100px;font-size:0.9rem;font-weight:300;border:1.5px solid rgba(255,255,255,0.4);font-family:var(--fb);cursor:pointer;transition:all 0.2s">Talk to Us</button>
+  </div>
+</div>
+
+<footer>
+  <div>
+    <div class="fl">Rent<span>It</span></div>
+    <p>Bridging the technology gap, one rental at a time. Affordable · Flexible · Accessible.</p>
+  </div>
+  <div class="fcol"><h5>Platform</h5><a href="#products">Browse Devices</a><a href="#how">How It Works</a><a href="#pricing">Pricing</a><a href="#">Partner With Us</a></div>
+  <div class="fcol"><h5>Company</h5><a href="#team">Our Team</a><a href="#">About Us</a><a href="#">Blog</a><a href="#">Careers</a></div>
+  <div class="fcol"><h5>Support</h5><a href="#">Help Center</a><a href="#">Terms of Service</a><a href="#">Privacy Policy</a><a href="#">Contact Us</a></div>
+</footer>
+<div class="fbot"><span>© 2025 RentIt. All rights reserved.</span><span>Made with ❤️ in India 🇮🇳</span></div>
+
+<!-- MODAL -->
+<div class="ovl" id="ovl" onclick="co(event)">
+  <div class="modal">
+    <button class="mcl" onclick="cm()">✕</button>
+    <div class="mt" id="mT">Device</div>
+    <div class="msp" id="mS">Specs</div>
+    <div style="font-size:0.72rem;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px">Select Duration</div>
+    <div class="dg">
+      <div class="do sel" onclick="pd(this)"><div class="dp" id="d1">₹299</div><div class="dl">Per Day</div></div>
+      <div class="do" onclick="pd(this)"><div class="dp" id="d2">₹1,499</div><div class="dl">Per Week</div></div>
+      <div class="do" onclick="pd(this)"><div class="dp" id="d3">₹4,999</div><div class="dl">Per Month</div></div>
+    </div>
+    <div class="mf"><label>Full Name</label><input type="text" id="mn" placeholder="Your name"></div>
+    <div class="mf"><label>Phone / WhatsApp</label><input type="text" id="mp" placeholder="+91 98765 43210"></div>
+    <div class="mf"><label>Delivery Address</label><input type="text" id="ma" placeholder="Your city / area"></div>
+    <button class="msub" onclick="cb()">Confirm Booking →</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"><span>✅</span><span id="tm">Booking confirmed!</span></div>
+
+<script>
+const prods=[
+  {id:1,cat:'laptop',name:'Budget Laptop',spec:'Intel i5 · 8GB RAM · 256GB SSD · Windows 11',price:'₹99',img:'https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=500&q=80',badge:'',bc:'',d:99,w:499,m:1499},
+  {id:2,cat:'laptop',name:'MacBook Pro M3',spec:'Apple M3 · 16GB RAM · 512GB SSD · macOS Sonoma',price:'₹299',img:'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=500&q=80',badge:'Popular',bc:'bpop',d:299,w:1499,m:4999},
+  {id:3,cat:'gaming',name:'Gaming PC RTX 4080',spec:'Ryzen 9 7900X · 32GB DDR5 · RTX 4080 · 2TB NVMe',price:'₹599',img:'https://images.unsplash.com/photo-1593642702821-c8da6771f0c6?w=500&q=80',badge:'',bc:'',d:599,w:2999,m:9999},
+  {id:4,cat:'workstation',name:'4K Workstation',spec:'Intel Xeon · 64GB ECC RAM · RTX A4000 · 4TB',price:'₹799',img:'https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=500&q=80',badge:'New',bc:'bnew',d:799,w:3999,m:12999},
+  {id:5,cat:'gaming',name:'Gaming PC RTX 4090',spec:'Core i9-13900K · 32GB DDR5 · RTX 4090 · 2TB',price:'₹999',img:'https://images.unsplash.com/photo-1603732551658-5fabbafa84eb?w=500&q=80',badge:'Popular',bc:'bpop',d:999,w:4999,m:16999},
+  {id:6,cat:'parts',name:'GPU: RTX 4070',spec:'NVIDIA RTX 4070 12GB GDDR6X — Part Rental',price:'₹199',img:'https://images.unsplash.com/photo-1591488320449-011701bb6704?w=500&q=80',badge:'Hot',bc:'bhot',d:199,w:999,m:2999},
+  {id:7,cat:'laptop',name:'Slim Ultrabook',spec:'AMD Ryzen 7 · 16GB · 512GB SSD · 14" 2K Display',price:'₹199',img:'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500&q=80',badge:'New',bc:'bnew',d:199,w:999,m:2999},
+  {id:8,cat:'workstation',name:'Creative Workstation',spec:'AMD Threadripper · 128GB RAM · Dual RTX · 8TB',price:'₹1,299',img:'https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?w=500&q=80',badge:'',bc:'',d:1299,w:6499,m:19999},
+  {id:9,cat:'parts',name:'RAM Upgrade 32GB',spec:'DDR5 32GB 4800MHz — Part Rental, install included',price:'₹49',img:'https://images.unsplash.com/photo-1563462296-57613d7e7a64?w=500&q=80',badge:'',bc:'',d:49,w:249,m:799},
+];
+
+function rp(filter){
+  const list=filter==='all'?prods:prods.filter(p=>p.cat===filter);
+  document.getElementById('pg').innerHTML=list.map(p=>`
+    <div class="pc">
+      <div class="pi">
+        ${p.badge?`<div class="pb ${p.bc}">${p.badge}</div>`:''}
+        <img src="${p.img}" alt="${p.name}" loading="lazy">
+      </div>
+      <div class="pbd">
+        <div class="pn">${p.name}</div>
+        <div class="ps">${p.spec}</div>
+        <div class="pf">
+          <div class="pp">${p.price}<small>/ day</small></div>
+          <button class="rb" onclick="op(${p.id})">Rent Now</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+rp('all');
+
+function fp(c,b){document.querySelectorAll('.ft').forEach(t=>t.classList.remove('on'));b.classList.add('on');rp(c);}
+function op(id){
+  const p=prods.find(x=>x.id===id);
+  document.getElementById('mT').textContent=p.name;
+  document.getElementById('mS').textContent=p.spec;
+  document.getElementById('d1').textContent='₹'+p.d.toLocaleString('en-IN');
+  document.getElementById('d2').textContent='₹'+p.w.toLocaleString('en-IN');
+  document.getElementById('d3').textContent='₹'+p.m.toLocaleString('en-IN');
+  document.querySelectorAll('.do').forEach((o,i)=>o.classList.toggle('sel',i===0));
+  document.getElementById('ovl').classList.add('on');
+}
+function om(t,s){document.getElementById('mT').textContent=t;document.getElementById('mS').textContent=s;document.getElementById('ovl').classList.add('on');}
+function cm(){document.getElementById('ovl').classList.remove('on');}
+function co(e){if(e.target===document.getElementById('ovl'))cm();}
+function pd(el){document.querySelectorAll('.do').forEach(o=>o.classList.remove('sel'));el.classList.add('sel');}
+function cb(){
+  const n=document.getElementById('mn').value.trim(),p=document.getElementById('mp').value.trim();
+  document.getElementById('mn').style.borderColor=n?'':'#cc2200';
+  document.getElementById('mp').style.borderColor=p?'':'#cc2200';
+  if(!n||!p)return;
+  cm();
+  document.getElementById('tm').textContent=`Booking confirmed for ${n}! We'll WhatsApp you shortly. 🎉`;
+  const t=document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),4000);
+  ['mn','mp','ma'].forEach(id=>document.getElementById(id).value='');
+}
+const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('v');}),{threshold:0.1});
+document.querySelectorAll('.rv').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>
