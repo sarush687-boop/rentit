@@ -727,11 +727,12 @@ nav {
       <div class="success-screen" id="successScreen">
         <div class="success-icon">✅</div>
         <h2 class="success-title">Device listed!</h2>
-        <p class="success-desc">Your listing has been submitted for review. We'll contact you within 24 hours to confirm pickup logistics.</p>
+        <p class="success-desc">Your listing is now <strong>live on RentIt</strong>. Head back to the catalog to see it appear instantly.</p>
         <div class="listing-preview" id="listingPreview"></div>
-        <button class="btn-submit" onclick="resetForm()" style="margin:0 auto">
-          List another device
-        </button>
+        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:4px">
+          <a href="index.html#products" class="btn-submit" style="margin:0;text-decoration:none;display:inline-flex;align-items:center;gap:8px">View on RentIt →</a>
+          <button class="btn-prev" onclick="resetForm()" style="margin:0;border:1.5px solid var(--border2);background:transparent;color:var(--text)">List another</button>
+        </div>
       </div>
 
       <!-- FOOTER BUTTONS -->
@@ -980,7 +981,7 @@ function updateNav() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// ── Submit (updated: no contact fields) ─────────────────────────
+// ── Submit ─────────────────────────────────────────────────────────
 function submitForm() {
   const type = selectedType === 'Other'
     ? document.getElementById('otherTypeInput').value
@@ -989,26 +990,67 @@ function submitForm() {
   const wv = parseInt(document.getElementById('priceWeek').value) || d * 6;
   const mv = parseInt(document.getElementById('priceMonth').value) || d * 22;
   const uid = 'RIT-' + Date.now().toString(36).toUpperCase();
+  const name = document.getElementById('productName').value.trim();
+  const brand = document.getElementById('brand').value.trim();
+  const condition = document.getElementById('conditionLabel').textContent;
+  const description = document.getElementById('description').value.trim();
 
-  // Since contact step removed, use placeholder values
-  const defaultCity = 'To be confirmed';
+  // Map type → landing page category
+  const catMap = {
+    'Laptop': 'laptop', 'MacBook': 'laptop', 'Ultrabook': 'laptop',
+    'Gaming PC': 'gaming', 'Desktop PC': 'gaming',
+    'Workstation': 'workstation',
+    'GPU / Graphics Card': 'parts', 'RAM / Memory': 'parts',
+    'Processor / CPU': 'parts', 'Storage / SSD / HDD': 'parts',
+  };
+  const cat = catMap[selectedType] || 'laptop';
 
-  document.getElementById('listingPreview').innerHTML = `
-    <div class="lp-row"><span class="lp-label">Listing ID</span><span class="lp-id">${uid}</span></div>
-    <div class="lp-row"><span class="lp-label">Device</span><span class="lp-val">${document.getElementById('productName').value}</span></div>
-    <div class="lp-row"><span class="lp-label">Type</span><span class="lp-val">${type}</span></div>
-    <div class="lp-row"><span class="lp-label">Daily Rate</span><span class="lp-val">₹${d.toLocaleString('en-IN')}/day</span></div>
-    <div class="lp-row"><span class="lp-label">City</span><span class="lp-val">${defaultCity}</span></div>
-    <div class="lp-row"><span class="lp-label">Status</span><span class="lp-val" style="color:var(--green);font-weight:500">⏳ Under Review</span></div>
-  `;
+  // Build the listing object (photo handled below)
+  const listing = {
+    id: uid,
+    name: brand ? `${brand} ${name}` : name,
+    spec: specs.join(' · ') + (condition ? ` · Condition: ${condition}` : ''),
+    cat,
+    price: '₹' + d.toLocaleString('en-IN'),
+    d, w: wv, m: mv,
+    badge: 'New', bc: 'bnew',
+    description,
+    submittedAt: Date.now(),
+    img: '' // filled below if photo exists
+  };
 
-  // Hide form, show success
-  for (let i = 0; i < totalSteps; i++) document.getElementById('step' + i).classList.remove('active');
-  document.getElementById('formFooter').style.display = 'none';
-  document.getElementById('stepsTrack').style.display = 'none';
-  document.getElementById('successScreen').classList.add('show');
-  document.getElementById('progressBar').style.width = '100%';
-  document.getElementById('progressBar').style.background = 'var(--green)';
+  // Convert first uploaded photo to base64 and save, else save immediately
+  function saveAndFinish(imgData) {
+    listing.img = imgData || 'https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=500&q=80';
+    try {
+      const existing = JSON.parse(localStorage.getItem('rentit_listings') || '[]');
+      existing.unshift(listing); // newest first
+      localStorage.setItem('rentit_listings', JSON.stringify(existing));
+    } catch(e) { console.warn('localStorage save failed', e); }
+
+    document.getElementById('listingPreview').innerHTML = `
+      <div class="lp-row"><span class="lp-label">Listing ID</span><span class="lp-id">${uid}</span></div>
+      <div class="lp-row"><span class="lp-label">Device</span><span class="lp-val">${listing.name}</span></div>
+      <div class="lp-row"><span class="lp-label">Type</span><span class="lp-val">${type}</span></div>
+      <div class="lp-row"><span class="lp-label">Daily Rate</span><span class="lp-val">₹${d.toLocaleString('en-IN')}/day</span></div>
+      <div class="lp-row"><span class="lp-label">Condition</span><span class="lp-val">${condition}</span></div>
+      <div class="lp-row"><span class="lp-label">Status</span><span class="lp-val" style="color:var(--green);font-weight:500">✅ Live on RentIt</span></div>
+    `;
+    for (let i = 0; i < totalSteps; i++) document.getElementById('step' + i).classList.remove('active');
+    document.getElementById('formFooter').style.display = 'none';
+    document.getElementById('stepsTrack').style.display = 'none';
+    document.getElementById('successScreen').classList.add('show');
+    document.getElementById('progressBar').style.width = '100%';
+    document.getElementById('progressBar').style.background = 'var(--green)';
+  }
+
+  if (photoFiles.length > 0) {
+    const reader = new FileReader();
+    reader.onload = e => saveAndFinish(e.target.result);
+    reader.readAsDataURL(photoFiles[0]);
+  } else {
+    saveAndFinish('');
+  }
 }
 
 function resetForm() {
