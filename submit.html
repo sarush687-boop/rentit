@@ -545,12 +545,6 @@ nav {
             <div class="field-error">Please enter the device name.</div>
           </div>
 
-          <div class="field">
-            <label>Unique Product ID <span class="req">*</span></label>
-            <input type="text" id="productId" placeholder="e.g. SN-2024-MB-001 or serial number" style="font-family: monospace; letter-spacing: 0.5px;">
-            <div class="field-hint">Your own reference ID or the device serial number.</div>
-            <div class="field-error">Please enter a unique product ID.</div>
-          </div>
 
           <div class="fields-row">
             <div class="field">
@@ -740,83 +734,7 @@ nav {
         </div>
       </div>
 
-      <!-- ── STEP 4: Contact & Location ── -->
-      <div class="form-section" id="step4">
-        <div class="section-header">
-          <div class="section-num">Step 05 of 05</div>
-          <div class="section-title">Contact & location</div>
-          <div class="section-desc">Where can we pick up the device? How do we reach you?</div>
-        </div>
 
-        <div class="fields-grid">
-          <div class="fields-row">
-            <div class="field">
-              <label>Your Name <span class="req">*</span></label>
-              <input type="text" id="ownerName" placeholder="Full name">
-              <div class="field-error">Please enter your name.</div>
-            </div>
-            <div class="field">
-              <label>Phone / WhatsApp <span class="req">*</span></label>
-              <div class="phone-wrap">
-                <span class="phone-prefix">+91</span>
-                <input type="tel" id="phone" placeholder="98765 43210" maxlength="10" oninput="this.value=this.value.replace(/\D/g,'')">
-              </div>
-              <div class="field-error" id="phoneErr">Please enter a valid 10-digit number.</div>
-            </div>
-          </div>
-
-          <div class="field">
-            <label>Email Address</label>
-            <input type="email" id="email" placeholder="you@example.com">
-          </div>
-
-          <div class="field">
-            <label>Pickup Address <span class="req">*</span></label>
-            <textarea id="address" placeholder="Full address — flat/house no., street, area…" style="min-height:80px"></textarea>
-            <div class="field-error">Please enter your pickup address.</div>
-          </div>
-
-          <div class="fields-row">
-            <div class="field">
-              <label>City <span class="req">*</span></label>
-              <select id="city">
-                <option value="">Select city…</option>
-                <option>Delhi</option>
-                <option>Mumbai</option>
-                <option>Bangalore</option>
-                <option>Pune</option>
-                <option>Hyderabad</option>
-                <option>Chennai</option>
-                <option>Kolkata</option>
-                <option>Jaipur</option>
-                <option>Ahmedabad</option>
-                <option>Jammu</option>
-                <option>Chandigarh</option>
-                <option>Other</option>
-              </select>
-              <div class="field-error">Select your city.</div>
-            </div>
-            <div class="field">
-              <label>PIN Code</label>
-              <input type="text" id="pin" placeholder="e.g. 110001" maxlength="6" oninput="this.value=this.value.replace(/\D/g,'')">
-            </div>
-          </div>
-
-          <div class="field">
-            <label>Availability</label>
-            <div class="duration-row">
-              <button class="dur-btn on" onclick="setAvail(this,'Immediate')" type="button">Immediate</button>
-              <button class="dur-btn" onclick="setAvail(this,'Within 3 days')" type="button">Within 3 days</button>
-              <button class="dur-btn" onclick="setAvail(this,'This week')" type="button">This week</button>
-            </div>
-          </div>
-
-          <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px 18px;display:flex;align-items:flex-start;gap:10px">
-            <span style="font-size:1rem;flex-shrink:0">🔒</span>
-            <p style="font-size:0.8rem;font-weight:300;color:var(--muted);line-height:1.6">Your contact details are kept private. Renters communicate through RentIt — your phone number is only shared once a booking is confirmed.</p>
-          </div>
-        </div>
-      </div>
 
       <!-- SUCCESS -->
       <div class="success-screen" id="successScreen">
