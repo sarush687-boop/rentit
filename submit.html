@@ -400,15 +400,6 @@ nav {
 .char-counter { font-size: 0.7rem; color: var(--light); text-align: right; margin-top: 4px; }
 .char-counter.warn { color: var(--error); }
 
-/* Phone prefix */
-.phone-wrap { position: relative; }
-.phone-prefix {
-  position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
-  font-size: 0.88rem; font-weight: 400; color: var(--muted);
-  pointer-events: none;
-}
-.phone-wrap input { padding-left: 42px; }
-
 /* Price symbol */
 .price-wrap { position: relative; }
 .price-sym {
@@ -471,22 +462,21 @@ nav {
 
   <!-- RIGHT: FORM CARD -->
   <div>
-    <!-- Steps -->
+    <!-- Steps indicator (4 steps) -->
     <div class="steps-track" id="stepsTrack">
       <div class="step-dot active" id="dot0">Device Type</div>
       <div class="step-dot" id="dot1">Details</div>
       <div class="step-dot" id="dot2">Specs</div>
       <div class="step-dot" id="dot3">Pricing</div>
-      <div class="step-dot" id="dot4">Contact</div>
     </div>
 
     <div class="form-card">
-      <div class="progress-bar" id="progressBar" style="width:20%"></div>
+      <div class="progress-bar" id="progressBar" style="width:25%"></div>
 
       <!-- ── STEP 0: Product Type ── -->
       <div class="form-section active" id="step0">
         <div class="section-header">
-          <div class="section-num">Step 01 of 05</div>
+          <div class="section-num">Step 01 of 04</div>
           <div class="section-title">What are you listing?</div>
           <div class="section-desc">Select the category that best describes your device.</div>
         </div>
@@ -530,10 +520,10 @@ nav {
         </div>
       </div>
 
-      <!-- ── STEP 1: Device Details ── -->
+      <!-- ── STEP 1: Device Details (Unique Product ID removed) ── -->
       <div class="form-section" id="step1">
         <div class="section-header">
-          <div class="section-num">Step 02 of 05</div>
+          <div class="section-num">Step 02 of 04</div>
           <div class="section-title">Device details</div>
           <div class="section-desc">Basic information to identify your listing.</div>
         </div>
@@ -544,7 +534,6 @@ nav {
             <input type="text" id="productName" placeholder="e.g. MacBook Pro M3, RTX 4080 Gaming PC">
             <div class="field-error">Please enter the device name.</div>
           </div>
-
 
           <div class="fields-row">
             <div class="field">
@@ -608,7 +597,7 @@ nav {
       <!-- ── STEP 2: Specs ── -->
       <div class="form-section" id="step2">
         <div class="section-header">
-          <div class="section-num">Step 03 of 05</div>
+          <div class="section-num">Step 03 of 04</div>
           <div class="section-title">Specs & description</div>
           <div class="section-desc">Help renters understand what they're getting. Be specific.</div>
         </div>
@@ -659,7 +648,7 @@ nav {
       <!-- ── STEP 3: Pricing ── -->
       <div class="form-section" id="step3">
         <div class="section-header">
-          <div class="section-num">Step 04 of 05</div>
+          <div class="section-num">Step 04 of 04</div>
           <div class="section-title">Pricing</div>
           <div class="section-desc">Set your rental price. You can offer multiple durations.</div>
         </div>
@@ -734,8 +723,6 @@ nav {
         </div>
       </div>
 
-
-
       <!-- SUCCESS -->
       <div class="success-screen" id="successScreen">
         <div class="success-icon">✅</div>
@@ -765,11 +752,10 @@ nav {
 <script>
 // ── State ────────────────────────────────────────────────────────────────────
 let currentStep = 0;
-const totalSteps = 5;
+const totalSteps = 4;  // Reduced from 5 to 4 (removed Contact step)
 let selectedType = '';
 let specs = [];
 let minDur = '1 Day';
-let availability = 'Immediate';
 let photoFiles = [];
 
 // ── Product Type Selection ───────────────────────────────────────────────────
@@ -895,13 +881,8 @@ function setMinDur(btn, val) {
   btn.classList.add('on');
   minDur = val;
 }
-function setAvail(btn, val) {
-  document.querySelectorAll('.duration-row')[1].querySelectorAll('.dur-btn').forEach(b => b.classList.remove('on'));
-  btn.classList.add('on');
-  availability = val;
-}
 
-// ── Validation ────────────────────────────────────────────────────────────────
+// ── Validation (updated for 4 steps) ───────────────
 function validate(step) {
   let ok = true;
 
@@ -915,9 +896,8 @@ function validate(step) {
 
   if (step === 1) {
     const pn = document.getElementById('productName');
-    const pi = document.getElementById('productId');
     const br = document.getElementById('brand');
-    [pn, pi, br].forEach(el => {
+    [pn, br].forEach(el => {
       const empty = !el.value.trim();
       el.classList.toggle('err', empty);
       if (empty) ok = false;
@@ -946,34 +926,10 @@ function validate(step) {
     if (empty) ok = false;
   }
 
-  if (step === 4) {
-    const name = document.getElementById('ownerName');
-    const phone = document.getElementById('phone');
-    const addr = document.getElementById('address');
-    const city = document.getElementById('city');
-
-    const nameEmpty = !name.value.trim();
-    name.classList.toggle('err', nameEmpty);
-    if (nameEmpty) ok = false;
-
-    const phoneInvalid = phone.value.length !== 10;
-    phone.classList.toggle('err', phoneInvalid);
-    document.getElementById('phoneErr').style.display = phoneInvalid ? 'block' : 'none';
-    if (phoneInvalid) ok = false;
-
-    const addrEmpty = !addr.value.trim();
-    addr.classList.toggle('err', addrEmpty);
-    if (addrEmpty) ok = false;
-
-    const cityEmpty = !city.value;
-    city.classList.toggle('err', cityEmpty);
-    if (cityEmpty) ok = false;
-  }
-
   return ok;
 }
 
-// ── Navigation ────────────────────────────────────────────────────────────────
+// ── Navigation (updated for 4 steps) ──────────────────────────────────────────
 function nextStep() {
   if (!validate(currentStep)) return;
 
@@ -1024,7 +980,7 @@ function updateNav() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// ── Submit ────────────────────────────────────────────────────────────────────
+// ── Submit (updated: no contact fields) ─────────────────────────
 function submitForm() {
   const type = selectedType === 'Other'
     ? document.getElementById('otherTypeInput').value
@@ -1034,13 +990,15 @@ function submitForm() {
   const mv = parseInt(document.getElementById('priceMonth').value) || d * 22;
   const uid = 'RIT-' + Date.now().toString(36).toUpperCase();
 
-  // Build preview
+  // Since contact step removed, use placeholder values
+  const defaultCity = 'To be confirmed';
+
   document.getElementById('listingPreview').innerHTML = `
     <div class="lp-row"><span class="lp-label">Listing ID</span><span class="lp-id">${uid}</span></div>
     <div class="lp-row"><span class="lp-label">Device</span><span class="lp-val">${document.getElementById('productName').value}</span></div>
     <div class="lp-row"><span class="lp-label">Type</span><span class="lp-val">${type}</span></div>
     <div class="lp-row"><span class="lp-label">Daily Rate</span><span class="lp-val">₹${d.toLocaleString('en-IN')}/day</span></div>
-    <div class="lp-row"><span class="lp-label">City</span><span class="lp-val">${document.getElementById('city').value}</span></div>
+    <div class="lp-row"><span class="lp-label">City</span><span class="lp-val">${defaultCity}</span></div>
     <div class="lp-row"><span class="lp-label">Status</span><span class="lp-val" style="color:var(--green);font-weight:500">⏳ Under Review</span></div>
   `;
 
