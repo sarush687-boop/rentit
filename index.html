@@ -586,36 +586,57 @@ const defaultProds = [
   {id:9,cat:'parts',name:'RAM Upgrade 32GB',spec:'DDR5 32GB 4800MHz — Part Rental, install included',price:'₹49',img:'https://images.unsplash.com/photo-1563462296-57613d7e7a64?w=500&q=80',badge:'',bc:'',d:49,w:249,m:799},
 ];
 
-/* ── Load user-submitted listings from localStorage ── */
-function getUserListings() {
-  try {
-    return JSON.parse(localStorage.getItem('rentit_listings') || '[]');
-  } catch(e) { return []; }
-}
+/* ── Worker URL (same as submit.html) ── */
+const WORKER_URL = 'https://curly-forest-11a2.officialdevwork35.workers.dev';
 
-/* Show "My Listings" tab if user has submitted any */
-function initMyListingsTab() {
-  const ul = getUserListings();
-  if (ul.length > 0) {
-    document.getElementById('myListingsBtn').style.display = '';
+/* ── State ── */
+let kvListings = [];       // listings fetched from KV (user submitted)
+let currentFilter = 'all';
+
+/* ── Fetch KV listings from Worker ── */
+async function fetchKVListings() {
+  try {
+    const res = await fetch(WORKER_URL + '/listings');
+    if (!res.ok) throw new Error('bad response');
+    const data = await res.json();
+    return Array.isArray(data) ? data : [];
+  } catch(e) {
+    console.warn('Could not fetch KV listings:', e);
+    return [];
   }
 }
-initMyListingsTab();
+
+/* ── Show loading skeleton ── */
+function showSkeleton() {
+  document.getElementById('pg').innerHTML = Array(3).fill(0).map(() => `
+    <div class="pc" style="pointer-events:none">
+      <div class="pi" style="background:linear-gradient(90deg,#f0eeea 25%,#e8e6e1 50%,#f0eeea 75%);background-size:200% 100%;animation:shimmer 1.4s infinite"></div>
+      <div class="pbd">
+        <div style="height:14px;border-radius:6px;background:linear-gradient(90deg,#f0eeea 25%,#e8e6e1 50%,#f0eeea 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;margin-bottom:8px"></div>
+        <div style="height:10px;border-radius:6px;background:linear-gradient(90deg,#f0eeea 25%,#e8e6e1 50%,#f0eeea 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;width:70%"></div>
+      </div>
+    </div>`).join('');
+}
 
 /* ── Render Products ── */
 function rp(filter) {
-  const userListings = getUserListings();
-  // Merge: user listings first, then defaults
+  currentFilter = filter;
+  // Merge: KV user listings first, then defaults
   const allProds = [
-    ...userListings.map(u => ({ ...u, isUserListing: true })),
+    ...kvListings.map(u => ({ ...u, isUserListing: true })),
     ...defaultProds
   ];
+
+  // Show "My Listings" tab if there are any KV listings
+  if (kvListings.length > 0) {
+    document.getElementById('myListingsBtn').style.display = '';
+  }
 
   let list;
   if (filter === 'all') {
     list = allProds;
   } else if (filter === 'mine') {
-    list = allProds.filter(p => p.isUserListing);
+    list = kvListings.map(u => ({ ...u, isUserListing: true }));
   } else {
     list = allProds.filter(p => p.cat === filter);
   }
@@ -635,22 +656,21 @@ function rp(filter) {
     <div class="pc${p.isUserListing ? ' user-listing' : ''}" style="animation:fadeInUp 0.4s ease both;animation-delay:${i * 0.06}s">
       <div class="pi">
         ${p.badge ? `<div class="pb ${p.bc}">${p.badge}</div>` : ''}
-        <img src="${p.img}" alt="${p.name}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=500&q=80'">
+        <img src="${p.img || 'https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=500&q=80'}" alt="${p.name}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=500&q=80'">
       </div>
       <div class="pbd">
         <div class="pn">${p.name}</div>
-        <div class="ps">${p.spec}</div>
+        <div class="ps">${p.spec || p.description || ''}</div>
         <div class="pf">
-          <div class="pp">${p.price || '₹' + p.d.toLocaleString('en-IN')}<small>/ day</small></div>
+          <div class="pp">${p.price || ('₹' + Number(p.d).toLocaleString('en-IN'))}<small>/ day</small></div>
           ${p.isUserListing
-            ? `<button class="rb" style="background:#cc2200" onclick="removeUserListing('${p.id}')">Remove</button>`
+            ? `<button class="rb" style="background:#cc2200" onclick="removeKVListing('${p.id}')">Remove</button>`
             : `<button class="rb" onclick="op(${p.id})">Rent Now</button>`
           }
         </div>
       </div>
     </div>`).join('');
 }
-rp('all');
 
 function fp(c, b) {
   document.querySelectorAll('.ft').forEach(t => t.classList.remove('on'));
@@ -666,18 +686,38 @@ function fp(c, b) {
   }, 180);
 }
 
-/* ── Remove a user listing ── */
-function removeUserListing(uid) {
+/* ── Remove a KV listing via Worker DELETE ── */
+async function removeKVListing(uid) {
   if (!confirm('Remove this listing from RentIt?')) return;
   try {
-    const existing = JSON.parse(localStorage.getItem('rentit_listings') || '[]');
-    const updated = existing.filter(l => l.id !== uid);
-    localStorage.setItem('rentit_listings', JSON.stringify(updated));
-    if (updated.length === 0) document.getElementById('myListingsBtn').style.display = 'none';
-    rp('all');
-    showToast('✅', 'Listing removed.');
-  } catch(e) {}
+    const res = await fetch(WORKER_URL + '/listings/' + uid, { method: 'DELETE' });
+    if (res.ok) {
+      kvListings = kvListings.filter(l => l.id !== uid);
+      if (kvListings.length === 0) document.getElementById('myListingsBtn').style.display = 'none';
+      rp(currentFilter);
+      showToast('✅', 'Listing removed.');
+    } else {
+      showToast('❌', 'Could not remove listing. Try again.');
+    }
+  } catch(e) {
+    showToast('❌', 'Network error removing listing.');
+  }
 }
+
+/* ── Boot: fetch KV listings then render ── */
+showSkeleton();
+fetchKVListings().then(data => {
+  kvListings = data;
+  rp('all');
+  // Show toast if a fresh submission just came through (within 30s)
+  if (kvListings.length > 0) {
+    const newest = kvListings[0];
+    const ageMs = Date.now() - (newest.submittedAt || 0);
+    if (ageMs < 30000) {
+      setTimeout(() => showToast('🎉', `"${newest.name}" is now live in the catalog!`, 'accent'), 600);
+    }
+  }
+});
 
 /* ── Modal ── */
 function op(id) {
@@ -714,17 +754,7 @@ function showToast(icon, msg, extraClass) {
   setTimeout(() => t.classList.remove('show'), 5000);
 }
 
-/* ── Show "listed!" toast if arriving from submit ── */
-(function checkNewListing() {
-  const ul = getUserListings();
-  if (ul.length > 0) {
-    const newest = ul[0];
-    const ageMs = Date.now() - (newest.submittedAt || 0);
-    if (ageMs < 30000) { // within 30 seconds of submitting
-      setTimeout(() => showToast('🎉', `"${newest.name}" is now live in the catalog!`, 'accent'), 600);
-    }
-  }
-})();
+
 
 /* ── Scroll Reveal ── */
 const obs = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('v'); }), { threshold: 0.08 });
