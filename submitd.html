@@ -124,12 +124,13 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 0 48px;
 .price-wrap { position: relative; }
 .price-sym { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 0.9rem; color: var(--muted); pointer-events: none; }
 .price-wrap input { padding-left: 28px; }
-/* Submitting overlay */
 .submitting-overlay { display: none; position: fixed; inset: 0; background: rgba(250,249,246,0.85); backdrop-filter: blur(8px); z-index: 999; align-items: center; justify-content: center; flex-direction: column; gap: 16px; }
 .submitting-overlay.show { display: flex; }
 .spinner { width: 40px; height: 40px; border: 3px solid var(--border2); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 .submitting-msg { font-size: 0.9rem; color: var(--muted); font-weight: 300; }
+.err-banner { background: var(--error-light); border: 1px solid #ffcccc; color: var(--error); border-radius: var(--r); padding: 14px 18px; font-size: 0.85rem; font-weight: 400; margin: 0 36px 20px; display: none; }
+.err-banner.show { display: block; }
 @media (max-width: 860px) {
   .page { grid-template-columns: 1fr; padding: 80px 24px 60px; }
   .left-panel { position: static; }
@@ -179,6 +180,9 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 0 48px;
 
     <div class="form-card">
       <div class="progress-bar" id="progressBar" style="width:25%"></div>
+
+      <!-- Error banner (shown if worker save fails) -->
+      <div class="err-banner" id="errBanner"></div>
 
       <!-- STEP 0: Product Type -->
       <div class="form-section active" id="step0">
@@ -248,7 +252,7 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 0 48px;
                  ondragover="handleDrag(event,true)" ondragleave="handleDrag(event,false)" ondrop="handleDrop(event)">
               <span class="upload-icon">📷</span>
               <div class="upload-label">Click to upload or drag & drop</div>
-              <div class="upload-hint">JPG, PNG up to 5MB each · Max 5 photos · Uploaded to ImgBB</div>
+              <div class="upload-hint">JPG, PNG up to 5MB each · Max 5 photos · Hosted on ImgBB</div>
               <input type="file" id="photoInput" accept="image/*" multiple onchange="handlePhotos(this)">
             </div>
             <div class="upload-previews" id="previewsRow"></div>
@@ -386,15 +390,19 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 0 48px;
 </div>
 
 <script>
-// ═══════════════════════════════════════════════════════════════════
-// !! IMPORTANT: Paste your Cloudflare Worker URL here !!
+// ════════════════════════════════════════════════════════════════
+// !! PASTE YOUR CLOUDFLARE WORKER URL BELOW !!
 // e.g. "https://rentit-worker.yoursubdomain.workers.dev"
-// ═══════════════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════════════════════
 const WORKER_URL = 'https://curly-forest-11a2.officialdevwork35.workers.dev';
 
+// ImgBB API key — images are uploaded here (not stored in KV)
 const IMGBB_API_KEY = '2743f354e162ebb7dd77a4fef6e2052e';
 
-// ── State ──────────────────────────────────────────────────────────
+// Fallback image if no photo uploaded
+const FALLBACK_IMG = 'https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=500&q=80';
+
+// ── State ──────────────────────────────────────────────────────
 let currentStep = 0;
 const totalSteps = 4;
 let selectedType = '';
@@ -402,7 +410,7 @@ let specs = [];
 let minDur = '1 Day';
 let photoFiles = [];
 
-// ── Type Select ────────────────────────────────────────────────────
+// ── Type Select ────────────────────────────────────────────────
 function selectType(card) {
   document.querySelectorAll('.type-card').forEach(c => c.classList.remove('selected'));
   card.classList.add('selected');
@@ -410,7 +418,7 @@ function selectType(card) {
   document.getElementById('otherTypeField').style.display = selectedType === 'Other' ? 'flex' : 'none';
 }
 
-// ── Spec Tags ──────────────────────────────────────────────────────
+// ── Spec Tags ──────────────────────────────────────────────────
 function handleSpecKey(e) {
   if (e.key === 'Enter' || e.key === ',') { e.preventDefault(); addSpec(e.target.value.replace(/,/g,'').trim()); }
   if (e.key === 'Backspace' && e.target.value === '' && specs.length > 0) removeSpec(specs.length - 1);
@@ -429,7 +437,7 @@ function renderSpecs() {
   wrap.appendChild(input); input.focus();
 }
 
-// ── Condition ──────────────────────────────────────────────────────
+// ── Condition ──────────────────────────────────────────────────
 const condLabels = ['','Poor','Fair','Good','Very Good','Like New'];
 function updateCondition(el) {
   const pct = ((el.value - 1) / 4) * 100;
@@ -438,7 +446,7 @@ function updateCondition(el) {
 }
 updateCondition(document.getElementById('conditionSlider'));
 
-// ── Photo Upload ───────────────────────────────────────────────────
+// ── Photo Upload ───────────────────────────────────────────────
 function handlePhotos(input) {
   Array.from(input.files).forEach(f => { if (photoFiles.length < 5) photoFiles.push(f); });
   renderPreviews();
@@ -460,14 +468,14 @@ function renderPreviews() {
 }
 function removePhoto(i) { photoFiles.splice(i, 1); renderPreviews(); }
 
-// ── Char Counter ───────────────────────────────────────────────────
+// ── Char Counter ───────────────────────────────────────────────
 function updateChar(el, id, max) {
   const c = document.getElementById(id);
   c.textContent = `${el.value.length} / ${max}`;
   c.classList.toggle('warn', el.value.length > max * 0.9);
 }
 
-// ── Pricing ────────────────────────────────────────────────────────
+// ── Pricing live preview ───────────────────────────────────────
 document.getElementById('priceDay').addEventListener('input', function() {
   const d = parseInt(this.value) || 0;
   if (!document.getElementById('priceWeek').dataset.manual)
@@ -488,7 +496,7 @@ function setMinDur(btn, val) {
   btn.classList.add('on'); minDur = val;
 }
 
-// ── Validation ─────────────────────────────────────────────────────
+// ── Validation ─────────────────────────────────────────────────
 function validate(step) {
   let ok = true;
   if (step === 0) {
@@ -522,7 +530,7 @@ function validate(step) {
   return ok;
 }
 
-// ── Navigation ─────────────────────────────────────────────────────
+// ── Navigation ─────────────────────────────────────────────────
 function nextStep() {
   if (!validate(currentStep)) return;
   if (currentStep === totalSteps - 1) { submitForm(); return; }
@@ -558,106 +566,137 @@ function updateNav() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// ── ImgBB Upload ───────────────────────────────────────────────────
+// ── ImgBB Upload ───────────────────────────────────────────────
 async function uploadImageToImgBB(file) {
   const fd = new FormData();
   fd.append('image', file);
   try {
-    const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: fd });
+    const res  = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: fd });
     const data = await res.json();
     return data.success ? data.data.url : null;
-  } catch { return null; }
+  } catch {
+    return null;
+  }
 }
 
-// ── Submit Form → ImgBB + Cloudflare Worker KV ─────────────────────
+// ── Show / hide error banner ───────────────────────────────────
+function showErr(msg) {
+  const b = document.getElementById('errBanner');
+  b.textContent = msg;
+  b.classList.add('show');
+}
+function hideErr() {
+  document.getElementById('errBanner').classList.remove('show');
+}
+
+// ── MAIN SUBMIT — ImgBB image → Cloudflare Worker KV ──────────
 async function submitForm() {
+  hideErr();
   const nextBtn = document.getElementById('nextBtn');
   nextBtn.disabled = true;
 
   const overlay = document.getElementById('submittingOverlay');
-  const msg = document.getElementById('submittingMsg');
+  const msg     = document.getElementById('submittingMsg');
   overlay.classList.add('show');
 
-  const type = selectedType === 'Other' ? document.getElementById('otherTypeInput').value : selectedType;
-  const d = parseInt(document.getElementById('priceDay').value);
-  const wv = parseInt(document.getElementById('priceWeek').value) || d * 6;
-  const mv = parseInt(document.getElementById('priceMonth').value) || d * 22;
-  const uid = 'RIT-' + Date.now().toString(36).toUpperCase();
+  // Resolve final device type string
+  const type = selectedType === 'Other'
+    ? document.getElementById('otherTypeInput').value.trim()
+    : selectedType;
+
+  const d    = parseInt(document.getElementById('priceDay').value);
+  const wv   = parseInt(document.getElementById('priceWeek').value)  || d * 6;
+  const mv   = parseInt(document.getElementById('priceMonth').value) || d * 22;
+  const uid  = 'RIT-' + Date.now().toString(36).toUpperCase();
   const name = document.getElementById('productName').value.trim();
-  const brand = document.getElementById('brand').value.trim();
+  const brand= document.getElementById('brand').value.trim();
   const condition = document.getElementById('conditionLabel').textContent;
 
+  // Map device type → catalog category
   const catMap = {
-    'Laptop':'laptop','Gaming PC':'gaming','Workstation':'workstation',
-    'GPU':'parts','RAM':'parts','Other':'laptop'
+    'Laptop':'laptop', 'Gaming PC':'gaming', 'Workstation':'workstation',
+    'GPU':'parts', 'RAM':'parts', 'Other':'laptop'
   };
   const cat = catMap[selectedType] || 'laptop';
 
-  // Step 1: Upload image to ImgBB
-  let imgUrl = 'https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=500&q=80';
+  // ── Step 1: Upload primary photo to ImgBB ─────────────────────
+  let imgUrl = FALLBACK_IMG;
   if (photoFiles.length > 0) {
-    msg.textContent = 'Uploading image to ImgBB…';
+    msg.textContent = 'Uploading photo to ImgBB…';
     const uploaded = await uploadImageToImgBB(photoFiles[0]);
-    if (uploaded) imgUrl = uploaded;
+    if (uploaded) {
+      imgUrl = uploaded;
+    } else {
+      // Non-fatal: proceed with fallback image
+      console.warn('ImgBB upload failed, using fallback image.');
+    }
   }
 
-  // Step 2: POST all form data to Cloudflare Worker
-  msg.textContent = 'Saving to RentIt database…';
+  // ── Step 2: Build full listing payload ────────────────────────
   const listing = {
-    id: uid,
-    name: brand ? `${brand} ${name}` : name,
-    spec: specs.join(' · ') + (condition ? ` · Condition: ${condition}` : ''),
-    cat, price: '₹' + d.toLocaleString('en-IN'),
-    d, w: wv, m: mv,
-    badge: 'New', bc: 'bnew',
+    id:          uid,
+    name:        brand ? `${brand} ${name}` : name,
+    spec:        specs.join(' · ') + (condition ? ` · Condition: ${condition}` : ''),
+    cat,
+    price:       '₹' + d.toLocaleString('en-IN'),
+    d,
+    w:           wv,
+    m:           mv,
+    badge:       'New',
+    bc:          'bnew',
     description: document.getElementById('description').value.trim(),
-    img: imgUrl,
-    condition, brand, type,
-    os: document.getElementById('os').value,
+    img:         imgUrl,
+    condition,
+    brand,
+    type,
+    os:          document.getElementById('os').value,
     accessories: document.getElementById('accessories').value.trim(),
-    yearPurchase: document.getElementById('yearPurchase').value,
-    deposit: parseInt(document.getElementById('deposit').value) || 0,
+    yearPurchase:document.getElementById('yearPurchase').value,
+    deposit:     parseInt(document.getElementById('deposit').value) || 0,
     minDuration: minDur,
     isUserListing: true,
   };
 
+  // ── Step 3: POST to Cloudflare Worker → KV ────────────────────
+  msg.textContent = 'Saving to RentIt database…';
+  let saveOk = false;
   try {
-    if (!WORKER_URL || WORKER_URL.includes('YOUR_WORKER')) {
-      throw new Error('Worker URL not configured');
-    }
     const res = await fetch(WORKER_URL + '/listings', {
-      method: 'POST',
+      method:  'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(listing),
+      body:    JSON.stringify(listing),
     });
-    if (!res.ok) throw new Error('Worker returned ' + res.status);
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.error || `HTTP ${res.status}`);
+    }
+    saveOk = true;
   } catch (e) {
-    // Fallback: save to localStorage if worker not configured yet
-    console.warn('Worker save failed, falling back to localStorage:', e.message);
-    try {
-      const existing = JSON.parse(localStorage.getItem('rentit_listings') || '[]');
-      existing.unshift(listing);
-      localStorage.setItem('rentit_listings', JSON.stringify(existing));
-    } catch {}
+    overlay.classList.remove('show');
+    nextBtn.disabled = false;
+    showErr(`❌ Could not save listing: ${e.message}. Check your Worker URL and KV binding, then try again.`);
+    return; // Stop — don't show success
   }
 
   overlay.classList.remove('show');
 
-  // Show success screen
-  document.getElementById('listingPreview').innerHTML = `
-    <div class="lp-row"><span class="lp-label">Listing ID</span><span class="lp-id">${uid}</span></div>
-    <div class="lp-row"><span class="lp-label">Device</span><span class="lp-val">${listing.name}</span></div>
-    <div class="lp-row"><span class="lp-label">Type</span><span class="lp-val">${type}</span></div>
-    <div class="lp-row"><span class="lp-label">Daily Rate</span><span class="lp-val">₹${d.toLocaleString('en-IN')}/day</span></div>
-    <div class="lp-row"><span class="lp-label">Condition</span><span class="lp-val">${condition}</span></div>
-    <div class="lp-row"><span class="lp-label">Status</span><span class="lp-val" style="color:var(--green);font-weight:500">✅ Live on RentIt</span></div>
-  `;
-  for (let i = 0; i < totalSteps; i++) document.getElementById('step' + i).classList.remove('active');
-  document.getElementById('formFooter').style.display = 'none';
-  document.getElementById('stepsTrack').style.display = 'none';
-  document.getElementById('successScreen').classList.add('show');
-  document.getElementById('progressBar').style.width = '100%';
-  document.getElementById('progressBar').style.background = 'var(--green)';
+  if (saveOk) {
+    // ── Show success screen ──────────────────────────────────────
+    document.getElementById('listingPreview').innerHTML = `
+      <div class="lp-row"><span class="lp-label">Listing ID</span><span class="lp-id">${uid}</span></div>
+      <div class="lp-row"><span class="lp-label">Device</span><span class="lp-val">${listing.name}</span></div>
+      <div class="lp-row"><span class="lp-label">Type</span><span class="lp-val">${type}</span></div>
+      <div class="lp-row"><span class="lp-label">Daily Rate</span><span class="lp-val">₹${d.toLocaleString('en-IN')}/day</span></div>
+      <div class="lp-row"><span class="lp-label">Condition</span><span class="lp-val">${condition}</span></div>
+      <div class="lp-row"><span class="lp-label">Status</span><span class="lp-val" style="color:var(--green);font-weight:500">✅ Live on RentIt</span></div>
+    `;
+    for (let i = 0; i < totalSteps; i++) document.getElementById('step' + i).classList.remove('active');
+    document.getElementById('formFooter').style.display   = 'none';
+    document.getElementById('stepsTrack').style.display   = 'none';
+    document.getElementById('successScreen').classList.add('show');
+    document.getElementById('progressBar').style.width    = '100%';
+    document.getElementById('progressBar').style.background = 'var(--green)';
+  }
 }
 
 function resetForm() { location.reload(); }
