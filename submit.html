@@ -7,407 +7,129 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
 :root {
-  --bg: #faf9f6;
-  --bg2: #f2f0eb;
-  --surface: #ffffff;
-  --border: rgba(0,0,0,0.08);
-  --border2: rgba(0,0,0,0.15);
-  --accent: #2b2aff;
-  --accent-light: #eeeeff;
-  --green: #1a7a3a;
-  --green-light: #edf7f1;
-  --text: #1a1a1a;
-  --muted: #6b6b6b;
-  --light: #9b9b9b;
-  --error: #cc2200;
-  --error-light: #fff5f3;
-  --fd: 'Fraunces', Georgia, serif;
-  --fb: 'DM Sans', sans-serif;
-  --r: 12px;
-  --rl: 20px;
+  --bg: #faf9f6; --bg2: #f2f0eb; --surface: #ffffff;
+  --border: rgba(0,0,0,0.08); --border2: rgba(0,0,0,0.15);
+  --accent: #2b2aff; --accent-light: #eeeeff;
+  --green: #1a7a3a; --green-light: #edf7f1;
+  --text: #1a1a1a; --muted: #6b6b6b; --light: #9b9b9b;
+  --error: #cc2200; --error-light: #fff5f3;
+  --fd: 'Fraunces', Georgia, serif; --fb: 'DM Sans', sans-serif;
+  --r: 12px; --rl: 20px;
 }
-
 html { scroll-behavior: smooth; }
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--fb);
-  font-weight: 300;
-  min-height: 100vh;
-  line-height: 1.6;
-}
-
-/* NAV */
-nav {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-  padding: 0 48px; height: 60px;
-  display: flex; align-items: center; justify-content: space-between;
-  background: rgba(250,249,246,0.94); backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--border);
-}
+body { background: var(--bg); color: var(--text); font-family: var(--fb); font-weight: 300; min-height: 100vh; line-height: 1.6; }
+nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 0 48px; height: 60px; display: flex; align-items: center; justify-content: space-between; background: rgba(250,249,246,0.94); backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); }
 .nav-logo { font-family: var(--fd); font-size: 1.25rem; font-weight: 600; color: var(--text); text-decoration: none; }
 .nav-logo span { color: var(--accent); }
-.nav-back {
-  display: inline-flex; align-items: center; gap: 6px;
-  font-size: 0.83rem; font-weight: 400; color: var(--muted);
-  text-decoration: none; transition: color 0.2s;
-}
+.nav-back { display: inline-flex; align-items: center; gap: 6px; font-size: 0.83rem; font-weight: 400; color: var(--muted); text-decoration: none; transition: color 0.2s; }
 .nav-back:hover { color: var(--text); }
 .nav-back svg { transition: transform 0.2s; }
 .nav-back:hover svg { transform: translateX(-3px); }
-
-/* LAYOUT */
-.page {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 100px 48px 80px;
-  display: grid;
-  grid-template-columns: 340px 1fr;
-  gap: 48px;
-  align-items: start;
-}
-
-/* LEFT PANEL */
-.left-panel {
-  position: sticky;
-  top: 80px;
-}
-
-.page-badge {
-  display: inline-flex; align-items: center; gap: 7px;
-  background: var(--accent-light); color: var(--accent);
-  font-size: 0.7rem; font-weight: 500; letter-spacing: 1px;
-  text-transform: uppercase; padding: 5px 13px;
-  border-radius: 100px; margin-bottom: 22px;
-}
+.page { max-width: 1100px; margin: 0 auto; padding: 100px 48px 80px; display: grid; grid-template-columns: 340px 1fr; gap: 48px; align-items: start; }
+.left-panel { position: sticky; top: 80px; }
+.page-badge { display: inline-flex; align-items: center; gap: 7px; background: var(--accent-light); color: var(--accent); font-size: 0.7rem; font-weight: 500; letter-spacing: 1px; text-transform: uppercase; padding: 5px 13px; border-radius: 100px; margin-bottom: 22px; }
 .badge-dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; animation: blink 1.8s infinite; }
 @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
-
-.page-title {
-  font-family: var(--fd);
-  font-size: 2.6rem; font-weight: 300;
-  line-height: 1.1; letter-spacing: -1px;
-  margin-bottom: 14px;
-}
+.page-title { font-family: var(--fd); font-size: 2.6rem; font-weight: 300; line-height: 1.1; letter-spacing: -1px; margin-bottom: 14px; }
 .page-title em { font-style: italic; color: var(--accent); }
-
-.page-desc {
-  font-size: 0.92rem; font-weight: 300; color: var(--muted);
-  line-height: 1.7; margin-bottom: 32px;
-}
-
+.page-desc { font-size: 0.92rem; font-weight: 300; color: var(--muted); line-height: 1.7; margin-bottom: 32px; }
 .perks { display: flex; flex-direction: column; gap: 12px; }
-.perk {
-  display: flex; align-items: flex-start; gap: 12px;
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--r); padding: 14px 16px;
-}
-.perk-icon {
-  width: 32px; height: 32px; border-radius: 8px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1rem; flex-shrink: 0;
-}
-.pi-blue { background: var(--accent-light); }
-.pi-green { background: var(--green-light); }
-.pi-warm { background: #fff8e0; }
+.perk { display: flex; align-items: flex-start; gap: 12px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); padding: 14px 16px; }
+.perk-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+.pi-blue { background: var(--accent-light); } .pi-green { background: var(--green-light); } .pi-warm { background: #fff8e0; }
 .perk-text h4 { font-size: 0.85rem; font-weight: 500; margin-bottom: 2px; }
 .perk-text p { font-size: 0.78rem; font-weight: 300; color: var(--muted); line-height: 1.5; }
-
-/* STEPS INDICATOR */
-.steps-track {
-  display: flex; gap: 0; margin-bottom: 32px;
-  border: 1px solid var(--border); border-radius: 100px;
-  overflow: hidden; background: var(--surface);
-}
-.step-dot {
-  flex: 1; padding: 8px 0; text-align: center;
-  font-size: 0.72rem; font-weight: 400; color: var(--light);
-  transition: all 0.3s; cursor: default; position: relative;
-}
-.step-dot.active {
-  background: var(--accent); color: white; font-weight: 500;
-}
-.step-dot.done {
-  background: var(--green-light); color: var(--green); font-weight: 500;
-}
-
-/* FORM CARD */
-.form-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--rl);
-  overflow: hidden;
-}
-
-.form-section {
-  display: none;
-  padding: 36px;
-  animation: fadeIn 0.3s ease;
-}
+.steps-track { display: flex; gap: 0; margin-bottom: 32px; border: 1px solid var(--border); border-radius: 100px; overflow: hidden; background: var(--surface); }
+.step-dot { flex: 1; padding: 8px 0; text-align: center; font-size: 0.72rem; font-weight: 400; color: var(--light); transition: all 0.3s; cursor: default; }
+.step-dot.active { background: var(--accent); color: white; font-weight: 500; }
+.step-dot.done { background: var(--green-light); color: var(--green); font-weight: 500; }
+.form-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--rl); overflow: hidden; }
+.form-section { display: none; padding: 36px; animation: fadeIn 0.3s ease; }
 .form-section.active { display: block; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-
-.section-header {
-  margin-bottom: 28px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid var(--border);
-}
-.section-num {
-  font-size: 0.68rem; font-weight: 500; color: var(--accent);
-  letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 6px;
-}
-.section-title {
-  font-family: var(--fd);
-  font-size: 1.5rem; font-weight: 400; letter-spacing: -0.5px;
-}
+.section-header { margin-bottom: 28px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+.section-num { font-size: 0.68rem; font-weight: 500; color: var(--accent); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 6px; }
+.section-title { font-family: var(--fd); font-size: 1.5rem; font-weight: 400; letter-spacing: -0.5px; }
 .section-desc { font-size: 0.84rem; font-weight: 300; color: var(--muted); margin-top: 4px; }
-
-/* FORM FIELDS */
 .fields-grid { display: grid; gap: 18px; }
 .fields-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-
 .field { display: flex; flex-direction: column; gap: 6px; }
-.field label {
-  font-size: 0.75rem; font-weight: 500; color: var(--text);
-  text-transform: uppercase; letter-spacing: 0.8px;
-}
+.field label { font-size: 0.75rem; font-weight: 500; color: var(--text); text-transform: uppercase; letter-spacing: 0.8px; }
 .field label .req { color: var(--error); margin-left: 2px; }
-
-.field input,
-.field select,
-.field textarea {
-  background: var(--bg);
-  border: 1.5px solid var(--border2);
-  border-radius: var(--r);
-  padding: 11px 14px;
-  font-family: var(--fb);
-  font-size: 0.9rem;
-  font-weight: 300;
-  color: var(--text);
-  outline: none;
-  transition: border-color 0.2s, background 0.2s;
-  width: 100%;
-}
-.field input::placeholder,
-.field textarea::placeholder { color: var(--light); }
-.field input:focus,
-.field select:focus,
-.field textarea:focus {
-  border-color: var(--accent);
-  background: var(--surface);
-}
-.field input.err,
-.field select.err,
-.field textarea.err {
-  border-color: var(--error);
-  background: var(--error-light);
-}
+.field input, .field select, .field textarea { background: var(--bg); border: 1.5px solid var(--border2); border-radius: var(--r); padding: 11px 14px; font-family: var(--fb); font-size: 0.9rem; font-weight: 300; color: var(--text); outline: none; transition: border-color 0.2s, background 0.2s; width: 100%; }
+.field input::placeholder, .field textarea::placeholder { color: var(--light); }
+.field input:focus, .field select:focus, .field textarea:focus { border-color: var(--accent); background: var(--surface); }
+.field input.err, .field select.err, .field textarea.err { border-color: var(--error); background: var(--error-light); }
 .field textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
 .field select { appearance: none; cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L6 7L11 1' stroke='%236b6b6b' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
-
 .field-hint { font-size: 0.72rem; font-weight: 300; color: var(--light); }
 .field-error { font-size: 0.72rem; font-weight: 400; color: var(--error); display: none; }
-.field input.err ~ .field-error,
-.field select.err ~ .field-error,
-.field textarea.err ~ .field-error { display: block; }
-
-/* SPEC TAGS */
-.spec-tags-wrap {
-  background: var(--bg);
-  border: 1.5px solid var(--border2);
-  border-radius: var(--r);
-  padding: 10px 12px;
-  display: flex; flex-wrap: wrap; gap: 6px; align-items: center;
-  min-height: 48px; cursor: text; transition: border-color 0.2s;
-}
+.field input.err ~ .field-error, .field select.err ~ .field-error, .field textarea.err ~ .field-error { display: block; }
+.spec-tags-wrap { background: var(--bg); border: 1.5px solid var(--border2); border-radius: var(--r); padding: 10px 12px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; min-height: 48px; cursor: text; transition: border-color 0.2s; }
 .spec-tags-wrap:focus-within { border-color: var(--accent); background: var(--surface); }
-.spec-tag {
-  display: inline-flex; align-items: center; gap: 5px;
-  background: var(--accent-light); color: var(--accent);
-  font-size: 0.78rem; font-weight: 400;
-  padding: 3px 10px 3px 10px; border-radius: 100px;
-}
-.spec-tag button {
-  background: none; border: none; cursor: pointer;
-  color: var(--accent); font-size: 0.9rem; line-height: 1;
-  padding: 0; opacity: 0.6; transition: opacity 0.2s;
-}
+.spec-tag { display: inline-flex; align-items: center; gap: 5px; background: var(--accent-light); color: var(--accent); font-size: 0.78rem; font-weight: 400; padding: 3px 10px; border-radius: 100px; }
+.spec-tag button { background: none; border: none; cursor: pointer; color: var(--accent); font-size: 0.9rem; line-height: 1; padding: 0; opacity: 0.6; transition: opacity 0.2s; }
 .spec-tag button:hover { opacity: 1; }
-.spec-tag-input {
-  border: none; background: transparent; outline: none;
-  font-family: var(--fb); font-size: 0.88rem; font-weight: 300;
-  color: var(--text); flex: 1; min-width: 140px;
-  padding: 2px 0;
-}
+.spec-tag-input { border: none; background: transparent; outline: none; font-family: var(--fb); font-size: 0.88rem; font-weight: 300; color: var(--text); flex: 1; min-width: 140px; padding: 2px 0; }
 .spec-tag-input::placeholder { color: var(--light); }
-
-/* PRODUCT TYPE GRID */
-.type-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-}
-.type-card {
-  border: 1.5px solid var(--border2);
-  border-radius: var(--r);
-  padding: 16px 12px;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.2s;
-  background: var(--bg);
-}
+.type-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.type-card { border: 1.5px solid var(--border2); border-radius: var(--r); padding: 16px 12px; text-align: center; cursor: pointer; transition: all 0.2s; background: var(--bg); }
 .type-card:hover { border-color: var(--accent); background: var(--accent-light); }
-.type-card.selected {
-  border-color: var(--accent);
-  background: var(--accent-light);
-  box-shadow: 0 0 0 3px rgba(43,42,255,0.1);
-}
+.type-card.selected { border-color: var(--accent); background: var(--accent-light); box-shadow: 0 0 0 3px rgba(43,42,255,0.1); }
 .type-card .type-icon { font-size: 1.8rem; margin-bottom: 8px; display: block; }
 .type-card .type-name { font-size: 0.8rem; font-weight: 400; color: var(--text); }
 .type-card .type-sub { font-size: 0.7rem; font-weight: 300; color: var(--muted); margin-top: 2px; }
-
-/* PRICE DURATION TOGGLE */
 .duration-row { display: flex; gap: 8px; }
-.dur-btn {
-  flex: 1; padding: 9px 0; border-radius: 8px;
-  font-size: 0.78rem; font-weight: 400; cursor: pointer;
-  border: 1.5px solid var(--border2); color: var(--muted);
-  background: var(--bg); transition: all 0.2s; font-family: var(--fb);
-  text-align: center;
-}
+.dur-btn { flex: 1; padding: 9px 0; border-radius: 8px; font-size: 0.78rem; font-weight: 400; cursor: pointer; border: 1.5px solid var(--border2); color: var(--muted); background: var(--bg); transition: all 0.2s; font-family: var(--fb); text-align: center; }
 .dur-btn.on { background: var(--text); color: white; border-color: var(--text); }
-
-/* CONDITION SLIDER */
 .condition-track { padding: 4px 0; }
-.condition-slider {
-  -webkit-appearance: none; appearance: none;
-  width: 100%; height: 4px;
-  border-radius: 2px; outline: none; cursor: pointer;
-  background: linear-gradient(90deg, var(--accent) 0%, var(--accent) var(--pct, 75%), var(--border2) var(--pct, 75%));
-  transition: background 0.2s;
-}
-.condition-slider::-webkit-slider-thumb {
-  -webkit-appearance: none; appearance: none;
-  width: 18px; height: 18px; border-radius: 50%;
-  background: var(--accent); cursor: pointer;
-  border: 3px solid white; box-shadow: 0 1px 6px rgba(43,42,255,0.3);
-}
+.condition-slider { -webkit-appearance: none; appearance: none; width: 100%; height: 4px; border-radius: 2px; outline: none; cursor: pointer; background: linear-gradient(90deg, var(--accent) 0%, var(--accent) var(--pct, 75%), var(--border2) var(--pct, 75%)); transition: background 0.2s; }
+.condition-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%; background: var(--accent); cursor: pointer; border: 3px solid white; box-shadow: 0 1px 6px rgba(43,42,255,0.3); }
 .condition-labels { display: flex; justify-content: space-between; margin-top: 8px; }
 .condition-labels span { font-size: 0.7rem; font-weight: 300; color: var(--light); }
-.condition-value {
-  display: inline-block; margin-top: 8px;
-  font-size: 0.78rem; font-weight: 500; color: var(--accent);
-  background: var(--accent-light); padding: 2px 10px; border-radius: 100px;
-}
-
-/* PHOTO UPLOAD */
-.upload-zone {
-  border: 1.5px dashed var(--border2);
-  border-radius: var(--r);
-  padding: 32px 20px;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.2s;
-  background: var(--bg);
-}
+.condition-value { display: inline-block; margin-top: 8px; font-size: 0.78rem; font-weight: 500; color: var(--accent); background: var(--accent-light); padding: 2px 10px; border-radius: 100px; }
+.upload-zone { border: 1.5px dashed var(--border2); border-radius: var(--r); padding: 32px 20px; text-align: center; cursor: pointer; transition: all 0.2s; background: var(--bg); }
 .upload-zone:hover, .upload-zone.drag { border-color: var(--accent); background: var(--accent-light); }
 .upload-icon { font-size: 2rem; margin-bottom: 10px; display: block; opacity: 0.5; }
 .upload-label { font-size: 0.88rem; font-weight: 400; color: var(--text); margin-bottom: 4px; }
 .upload-hint { font-size: 0.75rem; font-weight: 300; color: var(--muted); }
 .upload-zone input { display: none; }
 .upload-previews { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
-.preview-thumb {
-  width: 72px; height: 72px; border-radius: 8px;
-  object-fit: cover; border: 1px solid var(--border);
-  position: relative;
-}
+.preview-thumb { width: 72px; height: 72px; border-radius: 8px; object-fit: cover; border: 1px solid var(--border); }
 .preview-wrap { position: relative; display: inline-block; }
-.preview-remove {
-  position: absolute; top: -6px; right: -6px;
-  width: 18px; height: 18px; border-radius: 50%;
-  background: var(--error); color: white; border: none;
-  font-size: 0.65rem; cursor: pointer; display: flex;
-  align-items: center; justify-content: center;
-}
-
-/* NAV BUTTONS */
-.form-footer {
-  padding: 20px 36px;
-  border-top: 1px solid var(--border);
-  display: flex; justify-content: space-between; align-items: center;
-  background: var(--bg);
-}
-.btn-prev {
-  background: transparent; color: var(--muted);
-  border: 1.5px solid var(--border2); padding: 10px 24px;
-  border-radius: 100px; font-size: 0.88rem; font-weight: 300;
-  cursor: pointer; font-family: var(--fb); transition: all 0.2s;
-  display: flex; align-items: center; gap: 6px;
-}
+.preview-remove { position: absolute; top: -6px; right: -6px; width: 18px; height: 18px; border-radius: 50%; background: var(--error); color: white; border: none; font-size: 0.65rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.form-footer { padding: 20px 36px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--bg); }
+.btn-prev { background: transparent; color: var(--muted); border: 1.5px solid var(--border2); padding: 10px 24px; border-radius: 100px; font-size: 0.88rem; font-weight: 300; cursor: pointer; font-family: var(--fb); transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
 .btn-prev:hover { color: var(--text); border-color: var(--text); }
-.btn-next {
-  background: var(--text); color: white;
-  border: none; padding: 10px 28px;
-  border-radius: 100px; font-size: 0.88rem; font-weight: 400;
-  cursor: pointer; font-family: var(--fb); transition: all 0.2s;
-  display: flex; align-items: center; gap: 6px;
-}
+.btn-next { background: var(--text); color: white; border: none; padding: 10px 28px; border-radius: 100px; font-size: 0.88rem; font-weight: 400; cursor: pointer; font-family: var(--fb); transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
 .btn-next:hover { background: var(--accent); }
-.btn-submit {
-  background: var(--green); color: white;
-  border: none; padding: 11px 32px;
-  border-radius: 100px; font-size: 0.9rem; font-weight: 500;
-  cursor: pointer; font-family: var(--fb); transition: all 0.2s;
-  display: flex; align-items: center; gap: 8px;
-}
+.btn-submit { background: var(--green); color: white; border: none; padding: 11px 32px; border-radius: 100px; font-size: 0.9rem; font-weight: 500; cursor: pointer; font-family: var(--fb); transition: all 0.2s; display: flex; align-items: center; gap: 8px; }
 .btn-submit:hover { background: #145f2e; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(26,122,58,0.3); }
-
-.progress-bar {
-  height: 3px; background: var(--accent);
-  transition: width 0.4s ease;
-}
-
-/* SUCCESS STATE */
-.success-screen {
-  display: none;
-  padding: 60px 36px;
-  text-align: center;
-  animation: fadeIn 0.4s ease;
-}
+.btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+.progress-bar { height: 3px; background: var(--accent); transition: width 0.4s ease; }
+.success-screen { display: none; padding: 60px 36px; text-align: center; animation: fadeIn 0.4s ease; }
 .success-screen.show { display: block; }
-.success-icon {
-  width: 72px; height: 72px; border-radius: 50%;
-  background: var(--green-light); border: 2px solid var(--green);
-  display: flex; align-items: center; justify-content: center;
-  margin: 0 auto 24px; font-size: 2rem;
-}
+.success-icon { width: 72px; height: 72px; border-radius: 50%; background: var(--green-light); border: 2px solid var(--green); display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; font-size: 2rem; }
 .success-title { font-family: var(--fd); font-size: 2rem; font-weight: 400; margin-bottom: 12px; }
 .success-desc { font-size: 0.92rem; font-weight: 300; color: var(--muted); max-width: 380px; margin: 0 auto 32px; line-height: 1.7; }
-.listing-preview {
-  background: var(--bg); border: 1px solid var(--border);
-  border-radius: var(--r); padding: 20px; max-width: 380px;
-  margin: 0 auto 28px; text-align: left;
-}
+.listing-preview { background: var(--bg); border: 1px solid var(--border); border-radius: var(--r); padding: 20px; max-width: 380px; margin: 0 auto 28px; text-align: left; }
 .lp-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 0.83rem; }
 .lp-row:last-child { border-bottom: none; }
 .lp-label { color: var(--muted); font-weight: 300; }
 .lp-val { font-weight: 400; color: var(--text); }
 .lp-id { font-family: monospace; font-size: 0.78rem; color: var(--accent); }
-
-/* CHAR COUNTER */
 .char-counter { font-size: 0.7rem; color: var(--light); text-align: right; margin-top: 4px; }
 .char-counter.warn { color: var(--error); }
-
-/* Price symbol */
 .price-wrap { position: relative; }
-.price-sym {
-  position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
-  font-size: 0.9rem; color: var(--muted); pointer-events: none;
-}
+.price-sym { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 0.9rem; color: var(--muted); pointer-events: none; }
 .price-wrap input { padding-left: 28px; }
-
+/* Submitting overlay */
+.submitting-overlay { display: none; position: fixed; inset: 0; background: rgba(250,249,246,0.85); backdrop-filter: blur(8px); z-index: 999; align-items: center; justify-content: center; flex-direction: column; gap: 16px; }
+.submitting-overlay.show { display: flex; }
+.spinner { width: 40px; height: 40px; border: 3px solid var(--border2); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.submitting-msg { font-size: 0.9rem; color: var(--muted); font-weight: 300; }
 @media (max-width: 860px) {
   .page { grid-template-columns: 1fr; padding: 80px 24px 60px; }
   .left-panel { position: static; }
@@ -419,50 +141,35 @@ nav {
 </head>
 <body>
 
+<!-- Submitting overlay -->
+<div class="submitting-overlay" id="submittingOverlay">
+  <div class="spinner"></div>
+  <div class="submitting-msg" id="submittingMsg">Uploading image…</div>
+</div>
+
 <nav>
-  <a href="rentit-landing.html" class="nav-logo">Rent<span>It</span></a>
-  <a href="rentit-landing.html" class="nav-back">
+  <a href="index.html" class="nav-logo">Rent<span>It</span></a>
+  <a href="index.html" class="nav-back">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
     Back to listings
   </a>
 </nav>
 
 <div class="page">
-
   <!-- LEFT PANEL -->
   <div class="left-panel">
     <div class="page-badge"><span class="badge-dot"></span> List a Device</div>
     <h1 class="page-title">Earn from your <em>idle tech.</em></h1>
     <p class="page-desc">Submit your device to the RentIt marketplace. Set your price, we handle delivery, insurance and payments.</p>
-
     <div class="perks">
-      <div class="perk">
-        <div class="perk-icon pi-blue">💰</div>
-        <div class="perk-text">
-          <h4>Earn passively</h4>
-          <p>Devices sitting idle can earn you ₹99–₹1,299 per day.</p>
-        </div>
-      </div>
-      <div class="perk">
-        <div class="perk-icon pi-green">🔒</div>
-        <div class="perk-text">
-          <h4>Fully insured</h4>
-          <p>Every rental is covered. Your device is returned factory-reset.</p>
-        </div>
-      </div>
-      <div class="perk">
-        <div class="perk-icon pi-warm">🚚</div>
-        <div class="perk-text">
-          <h4>We handle logistics</h4>
-          <p>Pickup & delivery managed by RentIt. You do nothing.</p>
-        </div>
-      </div>
+      <div class="perk"><div class="perk-icon pi-blue">💰</div><div class="perk-text"><h4>Earn passively</h4><p>Devices sitting idle can earn you ₹99–₹1,299 per day.</p></div></div>
+      <div class="perk"><div class="perk-icon pi-green">🔒</div><div class="perk-text"><h4>Fully insured</h4><p>Every rental is covered. Your device is returned factory-reset.</p></div></div>
+      <div class="perk"><div class="perk-icon pi-warm">🚚</div><div class="perk-text"><h4>We handle logistics</h4><p>Pickup & delivery managed by RentIt. You do nothing.</p></div></div>
     </div>
   </div>
 
   <!-- RIGHT: FORM CARD -->
   <div>
-    <!-- Steps indicator (4 steps) -->
     <div class="steps-track" id="stepsTrack">
       <div class="step-dot active" id="dot0">Device Type</div>
       <div class="step-dot" id="dot1">Details</div>
@@ -473,85 +180,48 @@ nav {
     <div class="form-card">
       <div class="progress-bar" id="progressBar" style="width:25%"></div>
 
-      <!-- ── STEP 0: Product Type ── -->
+      <!-- STEP 0: Product Type -->
       <div class="form-section active" id="step0">
         <div class="section-header">
           <div class="section-num">Step 01 of 04</div>
           <div class="section-title">What are you listing?</div>
           <div class="section-desc">Select the category that best describes your device.</div>
         </div>
-
         <div class="type-grid" id="typeGrid">
-          <div class="type-card" data-val="Laptop" onclick="selectType(this)">
-            <span class="type-icon">💻</span>
-            <div class="type-name">Laptop</div>
-            <div class="type-sub">Ultrabooks, MacBooks</div>
-          </div>
-          <div class="type-card" data-val="Gaming PC" onclick="selectType(this)">
-            <span class="type-icon">🎮</span>
-            <div class="type-name">Gaming PC</div>
-            <div class="type-sub">Desktop rigs, towers</div>
-          </div>
-          <div class="type-card" data-val="Workstation" onclick="selectType(this)">
-            <span class="type-icon">🖥️</span>
-            <div class="type-name">Workstation</div>
-            <div class="type-sub">High-end desktops</div>
-          </div>
-          <div class="type-card" data-val="GPU" onclick="selectType(this)">
-            <span class="type-icon">🔩</span>
-            <div class="type-name">GPU / Card</div>
-            <div class="type-sub">RTX, RX, Quadro</div>
-          </div>
-          <div class="type-card" data-val="RAM" onclick="selectType(this)">
-            <span class="type-icon">🧩</span>
-            <div class="type-name">RAM</div>
-            <div class="type-sub">DDR4, DDR5 sticks</div>
-          </div>
-          <div class="type-card" data-val="Other" onclick="selectType(this)">
-            <span class="type-icon">📦</span>
-            <div class="type-name">Other</div>
-            <div class="type-sub">Monitors, peripherals</div>
-          </div>
+          <div class="type-card" data-val="Laptop" onclick="selectType(this)"><span class="type-icon">💻</span><div class="type-name">Laptop</div><div class="type-sub">Ultrabooks, MacBooks</div></div>
+          <div class="type-card" data-val="Gaming PC" onclick="selectType(this)"><span class="type-icon">🎮</span><div class="type-name">Gaming PC</div><div class="type-sub">Desktop rigs, towers</div></div>
+          <div class="type-card" data-val="Workstation" onclick="selectType(this)"><span class="type-icon">🖥️</span><div class="type-name">Workstation</div><div class="type-sub">High-end desktops</div></div>
+          <div class="type-card" data-val="GPU" onclick="selectType(this)"><span class="type-icon">🔩</span><div class="type-name">GPU / Card</div><div class="type-sub">RTX, RX, Quadro</div></div>
+          <div class="type-card" data-val="RAM" onclick="selectType(this)"><span class="type-icon">🧩</span><div class="type-name">RAM</div><div class="type-sub">DDR4, DDR5 sticks</div></div>
+          <div class="type-card" data-val="Other" onclick="selectType(this)"><span class="type-icon">📦</span><div class="type-name">Other</div><div class="type-sub">Monitors, peripherals</div></div>
         </div>
-
         <div class="field" style="margin-top:18px; display:none" id="otherTypeField">
           <label>Specify type <span class="req">*</span></label>
           <input type="text" id="otherTypeInput" placeholder="e.g. Monitor, SSD, Keyboard…">
         </div>
       </div>
 
-      <!-- ── STEP 1: Device Details (Unique Product ID removed) ── -->
+      <!-- STEP 1: Device Details -->
       <div class="form-section" id="step1">
         <div class="section-header">
           <div class="section-num">Step 02 of 04</div>
           <div class="section-title">Device details</div>
           <div class="section-desc">Basic information to identify your listing.</div>
         </div>
-
         <div class="fields-grid">
           <div class="field">
             <label>Device / Product Name <span class="req">*</span></label>
             <input type="text" id="productName" placeholder="e.g. MacBook Pro M3, RTX 4080 Gaming PC">
             <div class="field-error">Please enter the device name.</div>
           </div>
-
           <div class="fields-row">
             <div class="field">
               <label>Brand <span class="req">*</span></label>
               <select id="brand">
                 <option value="">Select brand…</option>
-                <option>Apple</option>
-                <option>Dell</option>
-                <option>HP</option>
-                <option>Lenovo</option>
-                <option>ASUS</option>
-                <option>Acer</option>
-                <option>MSI</option>
-                <option>Samsung</option>
-                <option>NVIDIA</option>
-                <option>AMD</option>
-                <option>Corsair</option>
-                <option>Other</option>
+                <option>Apple</option><option>Dell</option><option>HP</option><option>Lenovo</option>
+                <option>ASUS</option><option>Acer</option><option>MSI</option><option>Samsung</option>
+                <option>NVIDIA</option><option>AMD</option><option>Corsair</option><option>Other</option>
               </select>
               <div class="field-error">Select a brand.</div>
             </div>
@@ -559,34 +229,26 @@ nav {
               <label>Year of Purchase</label>
               <select id="yearPurchase">
                 <option value="">Select year…</option>
-                <option>2024</option>
-                <option>2023</option>
-                <option>2022</option>
-                <option>2021</option>
-                <option>2020</option>
-                <option>2019 or older</option>
+                <option>2025</option><option>2024</option><option>2023</option><option>2022</option>
+                <option>2021</option><option>2020</option><option>2019 or older</option>
               </select>
             </div>
           </div>
-
           <div class="field">
             <label>Condition</label>
             <div class="condition-track">
               <input type="range" class="condition-slider" id="conditionSlider" min="1" max="5" value="4" oninput="updateCondition(this)">
-              <div class="condition-labels">
-                <span>Poor</span><span>Fair</span><span>Good</span><span>Very Good</span><span>Like New</span>
-              </div>
+              <div class="condition-labels"><span>Poor</span><span>Fair</span><span>Good</span><span>Very Good</span><span>Like New</span></div>
               <div><span class="condition-value" id="conditionLabel">Very Good</span></div>
             </div>
           </div>
-
           <div class="field">
             <label>Device Photos</label>
             <div class="upload-zone" id="uploadZone" onclick="document.getElementById('photoInput').click()"
                  ondragover="handleDrag(event,true)" ondragleave="handleDrag(event,false)" ondrop="handleDrop(event)">
               <span class="upload-icon">📷</span>
               <div class="upload-label">Click to upload or drag & drop</div>
-              <div class="upload-hint">JPG, PNG up to 5MB each · Max 5 photos</div>
+              <div class="upload-hint">JPG, PNG up to 5MB each · Max 5 photos · Uploaded to ImgBB</div>
               <input type="file" id="photoInput" accept="image/*" multiple onchange="handlePhotos(this)">
             </div>
             <div class="upload-previews" id="previewsRow"></div>
@@ -594,26 +256,22 @@ nav {
         </div>
       </div>
 
-      <!-- ── STEP 2: Specs ── -->
+      <!-- STEP 2: Specs -->
       <div class="form-section" id="step2">
         <div class="section-header">
           <div class="section-num">Step 03 of 04</div>
           <div class="section-title">Specs & description</div>
           <div class="section-desc">Help renters understand what they're getting. Be specific.</div>
         </div>
-
         <div class="fields-grid">
-          <div class="field" id="specTagsField">
+          <div class="field">
             <label>Key Specs <span class="req">*</span></label>
             <div class="spec-tags-wrap" id="specTagsWrap" onclick="document.getElementById('specInput').focus()">
-              <input type="text" class="spec-tag-input" id="specInput"
-                     placeholder="Type a spec and press Enter — e.g. 16GB RAM"
-                     onkeydown="handleSpecKey(event)">
+              <input type="text" class="spec-tag-input" id="specInput" placeholder="Type a spec and press Enter — e.g. 16GB RAM" onkeydown="handleSpecKey(event)">
             </div>
-            <div class="field-hint">Press Enter or comma after each spec. e.g. Intel i9, 32GB DDR5, RTX 4080, 1TB NVMe</div>
+            <div class="field-hint">Press Enter or comma after each spec.</div>
             <div class="field-error" id="specError" style="display:none">Add at least one spec.</div>
           </div>
-
           <div class="field">
             <label>Description <span class="req">*</span></label>
             <textarea id="description" placeholder="Describe the device — what it's ideal for, any accessories included, known limitations…" maxlength="600" oninput="updateChar(this,'descChar',600)"></textarea>
@@ -622,19 +280,13 @@ nav {
               <div class="char-counter" id="descChar">0 / 600</div>
             </div>
           </div>
-
           <div class="fields-row">
             <div class="field">
               <label>Operating System</label>
               <select id="os">
                 <option value="">Select OS…</option>
-                <option>Windows 11</option>
-                <option>Windows 10</option>
-                <option>macOS Sonoma</option>
-                <option>macOS Ventura</option>
-                <option>Linux / Ubuntu</option>
-                <option>No OS (bare hardware)</option>
-                <option>N/A</option>
+                <option>Windows 11</option><option>Windows 10</option><option>macOS Sonoma</option>
+                <option>macOS Ventura</option><option>Linux / Ubuntu</option><option>No OS (bare hardware)</option><option>N/A</option>
               </select>
             </div>
             <div class="field">
@@ -645,53 +297,37 @@ nav {
         </div>
       </div>
 
-      <!-- ── STEP 3: Pricing ── -->
+      <!-- STEP 3: Pricing -->
       <div class="form-section" id="step3">
         <div class="section-header">
           <div class="section-num">Step 04 of 04</div>
           <div class="section-title">Pricing</div>
           <div class="section-desc">Set your rental price. You can offer multiple durations.</div>
         </div>
-
         <div class="fields-grid">
           <div class="field">
             <label>Daily Rate <span class="req">*</span></label>
-            <div class="price-wrap">
-              <span class="price-sym">₹</span>
-              <input type="number" id="priceDay" placeholder="99" min="1">
-            </div>
+            <div class="price-wrap"><span class="price-sym">₹</span><input type="number" id="priceDay" placeholder="99" min="1"></div>
             <div class="field-hint">Minimum ₹99/day recommended.</div>
             <div class="field-error" id="priceDayErr" style="display:none">Please enter a daily rate.</div>
           </div>
-
           <div class="fields-row">
             <div class="field">
               <label>Weekly Rate</label>
-              <div class="price-wrap">
-                <span class="price-sym">₹</span>
-                <input type="number" id="priceWeek" placeholder="Auto-calculated" min="1" oninput="clearAuto('priceWeek')">
-              </div>
-              <div class="field-hint" id="weekHint">Leave blank to auto-set (6× daily).</div>
+              <div class="price-wrap"><span class="price-sym">₹</span><input type="number" id="priceWeek" placeholder="Auto-calculated" min="1" oninput="clearAuto('priceWeek')"></div>
+              <div class="field-hint">Leave blank to auto-set (6× daily).</div>
             </div>
             <div class="field">
               <label>Monthly Rate</label>
-              <div class="price-wrap">
-                <span class="price-sym">₹</span>
-                <input type="number" id="priceMonth" placeholder="Auto-calculated" min="1" oninput="clearAuto('priceMonth')">
-              </div>
-              <div class="field-hint" id="monthHint">Leave blank to auto-set (22× daily).</div>
+              <div class="price-wrap"><span class="price-sym">₹</span><input type="number" id="priceMonth" placeholder="Auto-calculated" min="1" oninput="clearAuto('priceMonth')"></div>
+              <div class="field-hint">Leave blank to auto-set (22× daily).</div>
             </div>
           </div>
-
           <div class="field">
             <label>Security Deposit (optional)</label>
-            <div class="price-wrap">
-              <span class="price-sym">₹</span>
-              <input type="number" id="deposit" placeholder="e.g. 2000" min="0">
-            </div>
-            <div class="field-hint">Refundable on safe return. Leave blank for no deposit.</div>
+            <div class="price-wrap"><span class="price-sym">₹</span><input type="number" id="deposit" placeholder="e.g. 2000" min="0"></div>
+            <div class="field-hint">Refundable on safe return.</div>
           </div>
-
           <div class="field">
             <label>Minimum Rental Duration</label>
             <div class="duration-row">
@@ -701,9 +337,8 @@ nav {
               <button class="dur-btn" onclick="setMinDur(this,'1 Month')" type="button">1 Month</button>
             </div>
           </div>
-
           <!-- Live price summary -->
-          <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px" id="priceSummary">
+          <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px">
             <div style="font-size:0.72rem;font-weight:500;text-transform:uppercase;letter-spacing:1px;color:var(--light);margin-bottom:10px">Price Preview</div>
             <div style="display:flex;gap:0;overflow:hidden;border-radius:8px;border:1px solid var(--border)">
               <div style="flex:1;padding:12px;background:var(--surface);text-align:center;border-right:1px solid var(--border)">
@@ -727,11 +362,11 @@ nav {
       <div class="success-screen" id="successScreen">
         <div class="success-icon">✅</div>
         <h2 class="success-title">Device listed!</h2>
-        <p class="success-desc">Your listing is now <strong>live on RentIt</strong>. Head back to the catalog to see it appear instantly.</p>
+        <p class="success-desc">Your listing is now <strong>live on RentIt</strong>. Head back to the catalog to see it appear.</p>
         <div class="listing-preview" id="listingPreview"></div>
         <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:4px">
           <a href="index.html#products" class="btn-submit" style="margin:0;text-decoration:none;display:inline-flex;align-items:center;gap:8px">View on RentIt →</a>
-          <button class="btn-prev" onclick="resetForm()" style="margin:0;border:1.5px solid var(--border2);background:transparent;color:var(--text)">List another</button>
+          <button class="btn-prev" onclick="resetForm()" style="margin:0">List another</button>
         </div>
       </div>
 
@@ -751,62 +386,51 @@ nav {
 </div>
 
 <script>
-// ── State ────────────────────────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════
+// !! IMPORTANT: Paste your Cloudflare Worker URL here !!
+// e.g. "https://rentit-worker.yoursubdomain.workers.dev"
+// ═══════════════════════════════════════════════════════════════════
+const WORKER_URL = 'https://curly-forest-11a2.officialdevwork35.workers.dev';
+
+const IMGBB_API_KEY = '2743f354e162ebb7dd77a4fef6e2052e';
+
+// ── State ──────────────────────────────────────────────────────────
 let currentStep = 0;
-const totalSteps = 4;  // Reduced from 5 to 4 (removed Contact step)
+const totalSteps = 4;
 let selectedType = '';
 let specs = [];
 let minDur = '1 Day';
 let photoFiles = [];
 
-// ── Product Type Selection ───────────────────────────────────────────────────
+// ── Type Select ────────────────────────────────────────────────────
 function selectType(card) {
   document.querySelectorAll('.type-card').forEach(c => c.classList.remove('selected'));
   card.classList.add('selected');
   selectedType = card.dataset.val;
-  const other = document.getElementById('otherTypeField');
-  other.style.display = selectedType === 'Other' ? 'flex' : 'none';
+  document.getElementById('otherTypeField').style.display = selectedType === 'Other' ? 'flex' : 'none';
 }
 
-// ── Spec Tags ────────────────────────────────────────────────────────────────
+// ── Spec Tags ──────────────────────────────────────────────────────
 function handleSpecKey(e) {
-  if (e.key === 'Enter' || e.key === ',') {
-    e.preventDefault();
-    addSpec(e.target.value.replace(/,/g, '').trim());
-  }
-  if (e.key === 'Backspace' && e.target.value === '' && specs.length > 0) {
-    removeSpec(specs.length - 1);
-  }
+  if (e.key === 'Enter' || e.key === ',') { e.preventDefault(); addSpec(e.target.value.replace(/,/g,'').trim()); }
+  if (e.key === 'Backspace' && e.target.value === '' && specs.length > 0) removeSpec(specs.length - 1);
 }
-
-function addSpec(val) {
-  if (!val) return;
-  specs.push(val);
-  renderSpecs();
-  document.getElementById('specInput').value = '';
-}
-
-function removeSpec(idx) {
-  specs.splice(idx, 1);
-  renderSpecs();
-}
-
+function addSpec(val) { if (!val) return; specs.push(val); renderSpecs(); document.getElementById('specInput').value = ''; }
+function removeSpec(idx) { specs.splice(idx, 1); renderSpecs(); }
 function renderSpecs() {
   const wrap = document.getElementById('specTagsWrap');
   const input = document.getElementById('specInput');
   wrap.innerHTML = '';
   specs.forEach((s, i) => {
-    const tag = document.createElement('div');
-    tag.className = 'spec-tag';
+    const tag = document.createElement('div'); tag.className = 'spec-tag';
     tag.innerHTML = `${s}<button type="button" onclick="removeSpec(${i})">✕</button>`;
     wrap.appendChild(tag);
   });
-  wrap.appendChild(input);
-  input.focus();
+  wrap.appendChild(input); input.focus();
 }
 
-// ── Condition Slider ─────────────────────────────────────────────────────────
-const condLabels = ['', 'Poor', 'Fair', 'Good', 'Very Good', 'Like New'];
+// ── Condition ──────────────────────────────────────────────────────
+const condLabels = ['','Poor','Fair','Good','Very Good','Like New'];
 function updateCondition(el) {
   const pct = ((el.value - 1) / 4) * 100;
   el.style.setProperty('--pct', pct + '%');
@@ -814,111 +438,80 @@ function updateCondition(el) {
 }
 updateCondition(document.getElementById('conditionSlider'));
 
-// ── Photo Upload ─────────────────────────────────────────────────────────────
+// ── Photo Upload ───────────────────────────────────────────────────
 function handlePhotos(input) {
-  const files = Array.from(input.files);
-  files.forEach(f => { if (photoFiles.length < 5) photoFiles.push(f); });
+  Array.from(input.files).forEach(f => { if (photoFiles.length < 5) photoFiles.push(f); });
   renderPreviews();
 }
-function handleDrag(e, enter) {
-  e.preventDefault();
-  document.getElementById('uploadZone').classList.toggle('drag', enter);
-}
+function handleDrag(e, enter) { e.preventDefault(); document.getElementById('uploadZone').classList.toggle('drag', enter); }
 function handleDrop(e) {
-  e.preventDefault();
-  handleDrag(e, false);
-  const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
-  files.forEach(f => { if (photoFiles.length < 5) photoFiles.push(f); });
+  e.preventDefault(); handleDrag(e, false);
+  Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/')).forEach(f => { if (photoFiles.length < 5) photoFiles.push(f); });
   renderPreviews();
 }
 function renderPreviews() {
-  const row = document.getElementById('previewsRow');
-  row.innerHTML = '';
+  const row = document.getElementById('previewsRow'); row.innerHTML = '';
   photoFiles.forEach((f, i) => {
     const url = URL.createObjectURL(f);
-    const wrap = document.createElement('div');
-    wrap.className = 'preview-wrap';
+    const wrap = document.createElement('div'); wrap.className = 'preview-wrap';
     wrap.innerHTML = `<img src="${url}" class="preview-thumb"><button class="preview-remove" onclick="removePhoto(${i})">✕</button>`;
     row.appendChild(wrap);
   });
 }
-function removePhoto(i) {
-  photoFiles.splice(i, 1);
-  renderPreviews();
+function removePhoto(i) { photoFiles.splice(i, 1); renderPreviews(); }
+
+// ── Char Counter ───────────────────────────────────────────────────
+function updateChar(el, id, max) {
+  const c = document.getElementById(id);
+  c.textContent = `${el.value.length} / ${max}`;
+  c.classList.toggle('warn', el.value.length > max * 0.9);
 }
 
-// ── Char Counter ─────────────────────────────────────────────────────────────
-function updateChar(el, counterId, max) {
-  const el2 = document.getElementById(counterId);
-  el2.textContent = `${el.value.length} / ${max}`;
-  el2.classList.toggle('warn', el.value.length > max * 0.9);
-}
-
-// ── Pricing ──────────────────────────────────────────────────────────────────
+// ── Pricing ────────────────────────────────────────────────────────
 document.getElementById('priceDay').addEventListener('input', function() {
   const d = parseInt(this.value) || 0;
-  const wField = document.getElementById('priceWeek');
-  const mField = document.getElementById('priceMonth');
-  if (!wField.dataset.manual) {
-    document.getElementById('preWeek').textContent = d ? '₹' + (d * 6).toLocaleString('en-IN') : '₹—';
-  }
-  if (!mField.dataset.manual) {
-    document.getElementById('preMonth').textContent = d ? '₹' + (d * 22).toLocaleString('en-IN') : '₹—';
-  }
+  if (!document.getElementById('priceWeek').dataset.manual)
+    document.getElementById('preWeek').textContent = d ? '₹' + (d*6).toLocaleString('en-IN') : '₹—';
+  if (!document.getElementById('priceMonth').dataset.manual)
+    document.getElementById('preMonth').textContent = d ? '₹' + (d*22).toLocaleString('en-IN') : '₹—';
   document.getElementById('preDay').textContent = d ? '₹' + d.toLocaleString('en-IN') : '₹—';
 });
 document.getElementById('priceWeek').addEventListener('input', function() {
-  const v = parseInt(this.value) || 0;
-  document.getElementById('preWeek').textContent = v ? '₹' + v.toLocaleString('en-IN') : '₹—';
+  document.getElementById('preWeek').textContent = this.value ? '₹' + parseInt(this.value).toLocaleString('en-IN') : '₹—';
 });
 document.getElementById('priceMonth').addEventListener('input', function() {
-  const v = parseInt(this.value) || 0;
-  document.getElementById('preMonth').textContent = v ? '₹' + v.toLocaleString('en-IN') : '₹—';
+  document.getElementById('preMonth').textContent = this.value ? '₹' + parseInt(this.value).toLocaleString('en-IN') : '₹—';
 });
 function clearAuto(id) { document.getElementById(id).dataset.manual = '1'; }
-
 function setMinDur(btn, val) {
-  document.querySelectorAll('.duration-row')[0].querySelectorAll('.dur-btn').forEach(b => b.classList.remove('on'));
-  btn.classList.add('on');
-  minDur = val;
+  document.querySelectorAll('.duration-row .dur-btn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on'); minDur = val;
 }
 
-// ── Validation (updated for 4 steps) ───────────────
+// ── Validation ─────────────────────────────────────────────────────
 function validate(step) {
   let ok = true;
-
   if (step === 0) {
     if (!selectedType) { alert('Please select a product type.'); return false; }
     if (selectedType === 'Other' && !document.getElementById('otherTypeInput').value.trim()) {
-      document.getElementById('otherTypeInput').classList.add('err');
-      return false;
+      document.getElementById('otherTypeInput').classList.add('err'); return false;
     }
   }
-
   if (step === 1) {
-    const pn = document.getElementById('productName');
-    const br = document.getElementById('brand');
-    [pn, br].forEach(el => {
-      const empty = !el.value.trim();
-      el.classList.toggle('err', empty);
-      if (empty) ok = false;
+    ['productName','brand'].forEach(id => {
+      const el = document.getElementById(id);
+      el.classList.toggle('err', !el.value.trim());
+      if (!el.value.trim()) ok = false;
     });
   }
-
   if (step === 2) {
-    if (specs.length === 0) {
-      document.getElementById('specError').style.display = 'block';
-      ok = false;
-    } else {
-      document.getElementById('specError').style.display = 'none';
-    }
+    if (specs.length === 0) { document.getElementById('specError').style.display = 'block'; ok = false; }
+    else document.getElementById('specError').style.display = 'none';
     const desc = document.getElementById('description');
-    const empty = !desc.value.trim();
-    desc.classList.toggle('err', empty);
-    document.getElementById('descError').style.display = empty ? 'block' : 'none';
-    if (empty) ok = false;
+    desc.classList.toggle('err', !desc.value.trim());
+    document.getElementById('descError').style.display = desc.value.trim() ? 'none' : 'block';
+    if (!desc.value.trim()) ok = false;
   }
-
   if (step === 3) {
     const pd = document.getElementById('priceDay');
     const empty = !pd.value || parseInt(pd.value) < 1;
@@ -926,29 +519,21 @@ function validate(step) {
     document.getElementById('priceDayErr').style.display = empty ? 'block' : 'none';
     if (empty) ok = false;
   }
-
   return ok;
 }
 
-// ── Navigation (updated for 4 steps) ──────────────────────────────────────────
+// ── Navigation ─────────────────────────────────────────────────────
 function nextStep() {
   if (!validate(currentStep)) return;
-
-  if (currentStep === totalSteps - 1) {
-    submitForm();
-    return;
-  }
-
+  if (currentStep === totalSteps - 1) { submitForm(); return; }
   document.getElementById('step' + currentStep).classList.remove('active');
-  document.getElementById('dot' + currentStep).classList.remove('active');
+  document.getElementById('dot' + currentStep).classList.remove('active','done');
   document.getElementById('dot' + currentStep).classList.add('done');
   currentStep++;
   document.getElementById('step' + currentStep).classList.add('active');
   document.getElementById('dot' + currentStep).classList.add('active');
-
   updateNav();
 }
-
 function prevStep() {
   if (currentStep === 0) return;
   document.getElementById('step' + currentStep).classList.remove('active');
@@ -959,33 +544,41 @@ function prevStep() {
   document.getElementById('dot' + currentStep).classList.add('active');
   updateNav();
 }
-
 function updateNav() {
-  const prev = document.getElementById('prevBtn');
+  document.getElementById('prevBtn').style.visibility = currentStep === 0 ? 'hidden' : 'visible';
+  document.getElementById('progressBar').style.width = ((currentStep + 1) / totalSteps * 100) + '%';
   const next = document.getElementById('nextBtn');
-  const bar = document.getElementById('progressBar');
-
-  prev.style.visibility = currentStep === 0 ? 'hidden' : 'visible';
-  bar.style.width = ((currentStep + 1) / totalSteps * 100) + '%';
-
   if (currentStep === totalSteps - 1) {
     next.innerHTML = `Submit Listing <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>`;
-    next.classList.remove('btn-next');
-    next.classList.add('btn-submit');
+    next.className = 'btn-submit';
   } else {
     next.innerHTML = `Continue <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>`;
-    next.classList.add('btn-next');
-    next.classList.remove('btn-submit');
+    next.className = 'btn-next';
   }
-
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// ── Submit ─────────────────────────────────────────────────────────
-function submitForm() {
-  const type = selectedType === 'Other'
-    ? document.getElementById('otherTypeInput').value
-    : selectedType;
+// ── ImgBB Upload ───────────────────────────────────────────────────
+async function uploadImageToImgBB(file) {
+  const fd = new FormData();
+  fd.append('image', file);
+  try {
+    const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, { method: 'POST', body: fd });
+    const data = await res.json();
+    return data.success ? data.data.url : null;
+  } catch { return null; }
+}
+
+// ── Submit Form → ImgBB + Cloudflare Worker KV ─────────────────────
+async function submitForm() {
+  const nextBtn = document.getElementById('nextBtn');
+  nextBtn.disabled = true;
+
+  const overlay = document.getElementById('submittingOverlay');
+  const msg = document.getElementById('submittingMsg');
+  overlay.classList.add('show');
+
+  const type = selectedType === 'Other' ? document.getElementById('otherTypeInput').value : selectedType;
   const d = parseInt(document.getElementById('priceDay').value);
   const wv = parseInt(document.getElementById('priceWeek').value) || d * 6;
   const mv = parseInt(document.getElementById('priceMonth').value) || d * 22;
@@ -993,69 +586,81 @@ function submitForm() {
   const name = document.getElementById('productName').value.trim();
   const brand = document.getElementById('brand').value.trim();
   const condition = document.getElementById('conditionLabel').textContent;
-  const description = document.getElementById('description').value.trim();
 
-  // Map type → landing page category
   const catMap = {
-    'Laptop': 'laptop', 'MacBook': 'laptop', 'Ultrabook': 'laptop',
-    'Gaming PC': 'gaming', 'Desktop PC': 'gaming',
-    'Workstation': 'workstation',
-    'GPU / Graphics Card': 'parts', 'RAM / Memory': 'parts',
-    'Processor / CPU': 'parts', 'Storage / SSD / HDD': 'parts',
+    'Laptop':'laptop','Gaming PC':'gaming','Workstation':'workstation',
+    'GPU':'parts','RAM':'parts','Other':'laptop'
   };
   const cat = catMap[selectedType] || 'laptop';
 
-  // Build the listing object (photo handled below)
+  // Step 1: Upload image to ImgBB
+  let imgUrl = 'https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=500&q=80';
+  if (photoFiles.length > 0) {
+    msg.textContent = 'Uploading image to ImgBB…';
+    const uploaded = await uploadImageToImgBB(photoFiles[0]);
+    if (uploaded) imgUrl = uploaded;
+  }
+
+  // Step 2: POST all form data to Cloudflare Worker
+  msg.textContent = 'Saving to RentIt database…';
   const listing = {
     id: uid,
     name: brand ? `${brand} ${name}` : name,
     spec: specs.join(' · ') + (condition ? ` · Condition: ${condition}` : ''),
-    cat,
-    price: '₹' + d.toLocaleString('en-IN'),
+    cat, price: '₹' + d.toLocaleString('en-IN'),
     d, w: wv, m: mv,
     badge: 'New', bc: 'bnew',
-    description,
-    submittedAt: Date.now(),
-    img: '' // filled below if photo exists
+    description: document.getElementById('description').value.trim(),
+    img: imgUrl,
+    condition, brand, type,
+    os: document.getElementById('os').value,
+    accessories: document.getElementById('accessories').value.trim(),
+    yearPurchase: document.getElementById('yearPurchase').value,
+    deposit: parseInt(document.getElementById('deposit').value) || 0,
+    minDuration: minDur,
+    isUserListing: true,
   };
 
-  // Convert first uploaded photo to base64 and save, else save immediately
-  function saveAndFinish(imgData) {
-    listing.img = imgData || 'https://images.unsplash.com/photo-1587202372775-e229f172b9d7?w=500&q=80';
+  try {
+    if (!WORKER_URL || WORKER_URL.includes('YOUR_WORKER')) {
+      throw new Error('Worker URL not configured');
+    }
+    const res = await fetch(WORKER_URL + '/listings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(listing),
+    });
+    if (!res.ok) throw new Error('Worker returned ' + res.status);
+  } catch (e) {
+    // Fallback: save to localStorage if worker not configured yet
+    console.warn('Worker save failed, falling back to localStorage:', e.message);
     try {
       const existing = JSON.parse(localStorage.getItem('rentit_listings') || '[]');
-      existing.unshift(listing); // newest first
+      existing.unshift(listing);
       localStorage.setItem('rentit_listings', JSON.stringify(existing));
-    } catch(e) { console.warn('localStorage save failed', e); }
-
-    document.getElementById('listingPreview').innerHTML = `
-      <div class="lp-row"><span class="lp-label">Listing ID</span><span class="lp-id">${uid}</span></div>
-      <div class="lp-row"><span class="lp-label">Device</span><span class="lp-val">${listing.name}</span></div>
-      <div class="lp-row"><span class="lp-label">Type</span><span class="lp-val">${type}</span></div>
-      <div class="lp-row"><span class="lp-label">Daily Rate</span><span class="lp-val">₹${d.toLocaleString('en-IN')}/day</span></div>
-      <div class="lp-row"><span class="lp-label">Condition</span><span class="lp-val">${condition}</span></div>
-      <div class="lp-row"><span class="lp-label">Status</span><span class="lp-val" style="color:var(--green);font-weight:500">✅ Live on RentIt</span></div>
-    `;
-    for (let i = 0; i < totalSteps; i++) document.getElementById('step' + i).classList.remove('active');
-    document.getElementById('formFooter').style.display = 'none';
-    document.getElementById('stepsTrack').style.display = 'none';
-    document.getElementById('successScreen').classList.add('show');
-    document.getElementById('progressBar').style.width = '100%';
-    document.getElementById('progressBar').style.background = 'var(--green)';
+    } catch {}
   }
 
-  if (photoFiles.length > 0) {
-    const reader = new FileReader();
-    reader.onload = e => saveAndFinish(e.target.result);
-    reader.readAsDataURL(photoFiles[0]);
-  } else {
-    saveAndFinish('');
-  }
+  overlay.classList.remove('show');
+
+  // Show success screen
+  document.getElementById('listingPreview').innerHTML = `
+    <div class="lp-row"><span class="lp-label">Listing ID</span><span class="lp-id">${uid}</span></div>
+    <div class="lp-row"><span class="lp-label">Device</span><span class="lp-val">${listing.name}</span></div>
+    <div class="lp-row"><span class="lp-label">Type</span><span class="lp-val">${type}</span></div>
+    <div class="lp-row"><span class="lp-label">Daily Rate</span><span class="lp-val">₹${d.toLocaleString('en-IN')}/day</span></div>
+    <div class="lp-row"><span class="lp-label">Condition</span><span class="lp-val">${condition}</span></div>
+    <div class="lp-row"><span class="lp-label">Status</span><span class="lp-val" style="color:var(--green);font-weight:500">✅ Live on RentIt</span></div>
+  `;
+  for (let i = 0; i < totalSteps; i++) document.getElementById('step' + i).classList.remove('active');
+  document.getElementById('formFooter').style.display = 'none';
+  document.getElementById('stepsTrack').style.display = 'none';
+  document.getElementById('successScreen').classList.add('show');
+  document.getElementById('progressBar').style.width = '100%';
+  document.getElementById('progressBar').style.background = 'var(--green)';
 }
 
-function resetForm() {
-  location.reload();
-}
+function resetForm() { location.reload(); }
 </script>
 </body>
 </html>
